@@ -1,7 +1,7 @@
 [versions]
 
 # plugins
-shadow = "8.3.0"
+shadow = "8.3.6"
 
 socialismus = "2.0.0-RC1"
 
