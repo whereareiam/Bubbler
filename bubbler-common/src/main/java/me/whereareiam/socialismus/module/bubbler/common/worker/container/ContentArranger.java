@@ -25,9 +25,7 @@ public class ContentArranger {
   private final SerializationService serializer;
 
   @Inject
-  public ContentArranger(
-      LoggingHelper loggingHelper,
-      WorkerProcessor<BubbleMessage> workerProcessor,
+  public ContentArranger(LoggingHelper loggingHelper, WorkerProcessor<BubbleMessage> workerProcessor,
       SerializationService serializer) {
     this.loggingHelper = loggingHelper;
     this.serializer = serializer;
@@ -149,9 +147,8 @@ public class ContentArranger {
       String[] parts = format.split("\n");
       List<BubbleLine> newLines = new ArrayList<>();
 
-      for (String part : parts) {
+      for (String part : parts)
         newLines.add(BubbleLine.builder().content(serializer.format(sender, part)).build());
-      }
 
       if (isInitial) {
         newLines.addAll(bubbleLines);
