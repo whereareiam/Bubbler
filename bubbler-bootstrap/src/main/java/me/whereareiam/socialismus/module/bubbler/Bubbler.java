@@ -3,8 +3,6 @@ package me.whereareiam.socialismus.module.bubbler;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import java.util.Map;
-import java.util.stream.Stream;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.input.event.EventManager;
@@ -20,10 +18,12 @@ import me.whereareiam.socialismus.api.output.config.ConfigurationLoader;
 import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
 import me.whereareiam.socialismus.api.output.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
-import me.whereareiam.socialismus.module.bubbler.common.BubbleQueue;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
 import me.whereareiam.socialismus.module.bubbler.common.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.configuration.ConfigBinder;
+
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class Bubbler extends SocialisticModule {
   private final Injector parentInjector;
@@ -59,7 +59,6 @@ public class Bubbler extends SocialisticModule {
                 parentInjector.getInstance(PlayerContainerService.class)),
             new ConfigBinder(workingPath));
 
-    injector.getInstance(BubbleQueue.class);
     ProtocolVersion.setVersion(
         injector.getInstance(PlatformInteractor.class).getServerVersion());
 

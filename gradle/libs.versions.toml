@@ -3,7 +3,7 @@
 # plugins
 shadow = "8.3.6"
 
-socialismus = "2.0.0-RC1"
+socialismus = "dev"
 
 # compile time processing
 lombok = "1.18.34"
@@ -19,7 +19,7 @@ cloud-core = "2.0.0"
 
 [libraries]
 
-socialismus = { group = "com.github.whereareiam", name = "Socialismus", version.ref = "socialismus" }
+socialismus = { group = "me.whereareiam", name = "Socialismus", version.ref = "socialismus" }
 
 # compile time processing
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }

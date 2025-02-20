@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.module.bubbler.configuration.provider;
 
-import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -12,7 +11,6 @@ import me.whereareiam.socialismus.api.output.config.ConfigurationLoader;
 import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
 import me.whereareiam.socialismus.api.type.ConfigurationType;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
-import me.whereareiam.socialismus.module.bubbler.configuration.deserializer.Vector3fDeserializer;
 import me.whereareiam.socialismus.module.bubbler.configuration.dynamic.BubblesConfig;
 import me.whereareiam.socialismus.module.bubbler.configuration.template.BubbleTemplate;
 
@@ -35,15 +33,13 @@ public class BubblesProvider implements Provider<List<Bubble>>, Reloadable {
 
     @Inject
     public BubblesProvider(@Named("bubblesPath") Path bubblesPath, LoggingHelper loggingHelper, ConfigurationLoader configLoader,
-                           ConfigurationManager configManager, BubbleTemplate template, Vector3fDeserializer vector3fDeserializer,
-                           Registry<Reloadable> registry) {
+                           ConfigurationManager configManager, BubbleTemplate template, Registry<Reloadable> registry) {
         this.bubblesPath = bubblesPath;
         this.loggingHelper = loggingHelper;
         this.configLoader = configLoader;
         this.configurationType = configManager.getConfigurationType();
 
         configManager.addTemplate(BubblesConfig.class, template);
-        configManager.addDeserializer(Vector3f.class, vector3fDeserializer);
 
         registry.register(this);
 

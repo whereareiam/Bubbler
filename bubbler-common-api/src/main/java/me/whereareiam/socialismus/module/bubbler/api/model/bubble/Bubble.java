@@ -1,12 +1,12 @@
 package me.whereareiam.socialismus.module.bubbler.api.model.bubble;
 
-import com.github.retrooper.packetevents.util.Vector3f;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.api.type.Participants;
+import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
 import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
@@ -63,7 +63,7 @@ public class Bubble {
         private AnimationType animation;
         private DisplayType display;
         private boolean transparency;
-        private Vector3f scale;
+        private Vector scale;
 
         private BackgroundStyle background;
         private TextStyle text;

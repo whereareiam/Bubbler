@@ -2,8 +2,6 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 import me.whereareiam.socialismus.api.ComponentUtil;
 import me.whereareiam.socialismus.api.input.WorkerProcessor;
 import me.whereareiam.socialismus.api.input.serializer.SerializationService;
@@ -11,13 +9,17 @@ import me.whereareiam.socialismus.api.model.Worker;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
+import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Singleton
 public class ContentArranger {
   private static final String MESSAGE_PLACEHOLDER = "{message}";
-  private static final String PLAYER_NAME_PLACEHOLDER = "{playerName}";
 
   private final LoggingHelper loggingHelper;
   private final SerializationService serializer;
@@ -37,12 +39,10 @@ public class ContentArranger {
     loggingHelper.debug("Arranging content for " + bubbleMessage.getSender().getUsername());
 
     String content = ComponentUtil.toString(bubbleMessage.getContent());
-
     List<String> lines = formatContent(bubbleMessage, content);
-    List<BubbleLine> bubbleLines = createBubbleLines(bubbleMessage, lines);
+    List<BubbleGroup> groupedLines = createBubbleGroups(bubbleMessage, lines);
 
-    bubbleMessage.setLines(bubbleLines);
-
+    bubbleMessage.setGroups(new LinkedList<>(groupedLines));
     return bubbleMessage;
   }
 
@@ -108,15 +108,35 @@ public class ContentArranger {
     return bubbleLines;
   }
 
+  private List<BubbleGroup> createBubbleGroups(BubbleMessage bubbleMessage, List<String> lines) {
+    int maxLinesCount = bubbleMessage.getBubble().getDisplay().getMaxLinesCount();
+
+    List<BubbleGroup> groups = new ArrayList<>();
+    BubbleGroup currentGroup = BubbleGroup.builder().lines(new ArrayList<>()).build();
+
+    for (String line : lines) {
+      if (currentGroup.getLines().size() >= maxLinesCount) {
+        groups.add(currentGroup);
+        currentGroup = BubbleGroup.builder().lines(new ArrayList<>()).build();
+      }
+
+      BubbleLine bubbleLine = BubbleLine.builder()
+              .content(serializer.format(bubbleMessage.getSender(), line))
+              .build();
+      currentGroup.getLines().add(bubbleLine);
+    }
+
+    if (!currentGroup.getLines().isEmpty())
+      groups.add(currentGroup);
+
+    return groups;
+  }
+
   private void applyFormats(BubbleMessage bubbleMessage, List<BubbleLine> bubbleLines) {
     if (bubbleLines.isEmpty()) return;
 
     Bubble bubble = bubbleMessage.getBubble();
-    String initialFormat =
-        bubble
-            .getFormat()
-            .getInitialFormat()
-            .replace(PLAYER_NAME_PLACEHOLDER, bubbleMessage.getSender().getUsername());
+    String initialFormat = bubble.getFormat().getInitialFormat();
     String finalFormat = bubble.getFormat().getFinalFormat();
 
     applyFormatToLine(initialFormat, bubbleLines, bubbleMessage.getSender(), true);

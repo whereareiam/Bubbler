@@ -31,22 +31,23 @@ public class ContentTimeEvaluator {
   public BubbleMessage evaluateTime(BubbleMessage bubbleMessage) {
     loggingHelper.debug("Evaluating display time for " + bubbleMessage.getSender().getUsername());
 
-    bubbleMessage
-        .getLines()
-        .forEach(
-            line -> {
-              long displayTime =
-                  calculateDisplayTime(
-                      ComponentUtil.toPlain(line.getContent()), bubbleMessage.getBubble());
-              line.setDisplayTime(displayTime);
-            });
+    bubbleMessage.getGroups()
+            .forEach(group -> group.getLines()
+                    .forEach(line -> {
+                          long displayTime =
+                              calculateDisplayTime(
+                                  ComponentUtil.toPlain(line.getContent()), bubbleMessage.getBubble());
+                          line.setDisplayTime(displayTime);
+                        }));
 
     if (settings.get().getLevel() >= 3)
       loggingHelper.debug(
           "Display time for "
               + bubbleMessage.getSender().getUsername()
               + " is "
-              + bubbleMessage.getLines().stream().mapToLong(BubbleLine::getDisplayTime).sum());
+              + bubbleMessage.getGroups().stream().mapToLong(group ->
+                  group.getLines().stream().mapToLong(BubbleLine::getDisplayTime).sum()
+                  ).sum());
 
     return bubbleMessage;
   }

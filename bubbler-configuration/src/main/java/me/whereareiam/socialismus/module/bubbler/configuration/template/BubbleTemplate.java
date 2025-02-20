@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.module.bubbler.configuration.template;
 
-import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.api.model.requirement.type.ChatRequirement;
@@ -10,6 +9,7 @@ import me.whereareiam.socialismus.api.type.Participants;
 import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementOperatorType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
+import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleTransition;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
@@ -49,7 +49,7 @@ public class BubbleTemplate implements DefaultConfig<BubblesConfig> {
                         .animation(AnimationType.POPOUT)
                         .display(DisplayType.CENTER)
                         .transparency(true)
-                        .scale(new Vector3f(1.0f, 1.0f, 1.0f))
+                        .scale(new Vector(1.0f, 1.0f, 1.0f))
                         .background(Bubble.Style.BackgroundStyle.builder()
                                 .color("#000000")
                                 .opacity(40)

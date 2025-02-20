@@ -10,8 +10,4 @@ public abstract class BubbleAnimation {
   }
 
   public abstract void display(BubbleMessage bubbleMessage);
-
-  protected long calculateTotalDisplayTime(BubbleMessage bubbleMessage) {
-    return bubbleMessage.getLines().stream().mapToLong(BubbleLine::getDisplayTime).sum();
-  }
 }
