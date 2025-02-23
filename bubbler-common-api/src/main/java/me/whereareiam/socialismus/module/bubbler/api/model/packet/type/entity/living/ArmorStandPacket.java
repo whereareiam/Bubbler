@@ -6,6 +6,8 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.type.Version;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
@@ -15,13 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
+@SuperBuilder
 public class ArmorStandPacket extends EntityPacket {
 	private final boolean small;
-
-	private ArmorStandPacket(Builder builder) {
-		super(builder);
-		this.small = builder.small;
-	}
 
 	@Override
 	public void send(User user) {
@@ -53,24 +52,5 @@ public class ArmorStandPacket extends EntityPacket {
 		}
 
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
-	}
-
-	public static class Builder extends EntityPacket.Builder<Builder> {
-		private boolean small;
-
-		@Override
-		protected Builder self() {
-			return this;
-		}
-
-		public Builder withSmall(boolean small) {
-			this.small = small;
-			return this;
-		}
-
-		public ArmorStandPacket build(Version version) {
-			this.version = version;
-			return new ArmorStandPacket(this);
-		}
 	}
 }

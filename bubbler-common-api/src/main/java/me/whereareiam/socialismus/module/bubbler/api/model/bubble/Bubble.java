@@ -19,71 +19,78 @@ import java.util.Map;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Bubble {
-    private String id;
-    private boolean enabled;
-    private int priority;
-    private Display display;
-    private Format format;
-    private Style style;
+	private String id;
+	private boolean enabled;
+	private int priority;
+	private Display display;
+	private Format format;
+	private Style style;
 
-    private Map<TransitionType, BubbleTransition> transitions;
-    private Map<Participants, RequirementGroup> requirements;
+	private Map<TransitionType, BubbleTransition> transitions;
+	private Map<Participants, RequirementGroup> requirements;
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @SuperBuilder(toBuilder = true)
-    public static class Display {
-        private int radius;
-        private int maxLinesCount;
-        private int maxLineWidth;
-        private int maxWordLength;
+	@Getter
+	@ToString
+	@NoArgsConstructor
+	@SuperBuilder(toBuilder = true)
+	public static class Display {
+		private int radius;
+		private int maxLinesCount;
+		private int maxLineWidth;
+		private int maxWordLength;
 
-        private double timePerSymbol;
-        private double minimumTime;
-    }
+		private double timePerSymbol;
+		private double minimumTime;
+	}
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @SuperBuilder(toBuilder = true)
-    public static class Format {
-        private String format;
-        private String initialFormat;
-        private String finalFormat;
-        private String queuedFormat;
-        private String separatorFormat;
-    }
+	@Getter
+	@ToString
+	@NoArgsConstructor
+	@SuperBuilder(toBuilder = true)
+	public static class Format {
+		private String format;
+		private String initialFormat;
+		private String finalFormat;
+		private String queuedFormat;
+		private String separatorFormat;
+	}
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @SuperBuilder(toBuilder = true)
-    public static class Style {
-        private AnimationType animation;
-        private DisplayType display;
-        private boolean transparency;
-        private Vector scale;
+	@Getter
+	@ToString
+	@NoArgsConstructor
+	@SuperBuilder(toBuilder = true)
+	public static class Style {
+		private AnimationType animation;
+		private DisplayType display;
+		private boolean transparency;
+		private Vector scale;
 
-        private BackgroundStyle background;
-        private TextStyle text;
+		private BackgroundStyle background;
+		private TextStyle text;
 
-        @Getter
-        @ToString
-        @NoArgsConstructor
-        @SuperBuilder(toBuilder = true)
-        public static class BackgroundStyle {
-            private String color;
-            private int opacity;
-        }
+		@Getter
+		@ToString
+		@NoArgsConstructor
+		@SuperBuilder(toBuilder = true)
+		public static class BackgroundStyle {
+			private String color;
+			private int opacity;
 
-        @Getter
-        @ToString
-        @NoArgsConstructor
-        @SuperBuilder(toBuilder = true)
-        public static class TextStyle {
-            private AlignmentType alignment;
-            private boolean shadow;
-        }
-    }
+			public int getColor() {
+				return Integer.parseInt(
+						color.replace("#", ""),
+						16
+				);
+			}
+		}
+
+		@Getter
+		@ToString
+		@NoArgsConstructor
+		@SuperBuilder(toBuilder = true)
+		public static class TextStyle {
+			private AlignmentType alignment;
+			private boolean shadow;
+		}
+	}
 }
