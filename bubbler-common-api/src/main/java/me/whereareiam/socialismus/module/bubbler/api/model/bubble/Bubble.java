@@ -35,6 +35,9 @@ public class Bubble {
 	@SuperBuilder(toBuilder = true)
 	public static class Display {
 		private int radius;
+		private int headLineGap;
+		private int lineSpacing;
+
 		private int maxLinesCount;
 		private int maxLineWidth;
 		private int maxWordLength;
