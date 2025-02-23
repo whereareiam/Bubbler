@@ -25,8 +25,10 @@ public class DisplayPacket extends EntityPacket {
 
 	protected void addDisplayMetadata(List<EntityData> metadata) {
 		super.addCommonMetadata(metadata);
+
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
 			metadata.add(new EntityData(12, EntityDataTypes.VECTOR3F, scale));
+			metadata.add(new EntityData(15, EntityDataTypes.BYTE, type.getValue()));
 		}
 	}
 

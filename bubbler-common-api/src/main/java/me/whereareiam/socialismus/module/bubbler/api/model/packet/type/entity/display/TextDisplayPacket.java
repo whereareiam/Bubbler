@@ -26,6 +26,7 @@ public class TextDisplayPacket extends DisplayPacket {
 	private final boolean isSeeThrough;
 	private final AlignmentType alignment;
 	private final int backgroundColor;
+	private final short transparency;
 
 	@Override
 	public void send(User user) {
@@ -50,12 +51,12 @@ public class TextDisplayPacket extends DisplayPacket {
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
 			metadata.add(new EntityData(23, EntityDataTypes.ADV_COMPONENT, text));
 			metadata.add(new EntityData(25, EntityDataTypes.INT, backgroundColor));
+			metadata.add(new EntityData(26, EntityDataTypes.BYTE, (byte) (255 - (transparency * 255) / 100)));
 
 			byte flags = 0;
-			flags |= (byte) (hasShadow ? 0x01 : 0);
-			flags |= (byte) (isSeeThrough ? 0x02 : 0);
-			if (alignment != null)
-				flags |= alignment.getValue();
+			if (hasShadow) flags |= 0x01;
+			if (isSeeThrough) flags |= 0x02;
+			if (alignment != null) flags |= alignment.getValue();
 
 			metadata.add(new EntityData(27, EntityDataTypes.BYTE, flags));
 		}

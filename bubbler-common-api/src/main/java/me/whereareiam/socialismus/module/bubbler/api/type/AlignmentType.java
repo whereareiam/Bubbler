@@ -13,5 +13,4 @@ public enum AlignmentType {
 	AlignmentType(int value) {
 		this.value = (byte) value;
 	}
-
 }

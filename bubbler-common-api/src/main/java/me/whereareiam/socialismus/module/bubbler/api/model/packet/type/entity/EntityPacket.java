@@ -15,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 public abstract class EntityPacket implements Packet {
 	protected final int entityId = (int) (Math.random() * Integer.MAX_VALUE);
-	protected final Vector3d position;
+	protected final Vector3d position = new Vector3d(0.0D, 0.0D, 0.0D);
 	protected final boolean noGravity;
 
 	protected void addCommonMetadata(List<EntityData> metadata) {
