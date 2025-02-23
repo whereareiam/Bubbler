@@ -17,6 +17,8 @@ tasks.withType<ShadowJar> {
     archiveClassifier.set("")
 
     relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
+
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
 }
 
 tasks.named<Copy>("processResources") {
