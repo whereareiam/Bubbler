@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ArmorStandPacket extends EntityPacket {
 		byte status = 0;
 		if (small) status |= 0x01;
 
-		if (version.isAtLeast(Version.V_1_21_4)) {
+		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
 			metadata.add(new EntityData(15, EntityDataTypes.BYTE, status));
 		} else {
 			// TODO
@@ -58,7 +59,9 @@ public class ArmorStandPacket extends EntityPacket {
 		private boolean small;
 
 		@Override
-		protected Builder self() { return this; }
+		protected Builder self() {
+			return this;
+		}
 
 		public Builder withSmall(boolean small) {
 			this.small = small;

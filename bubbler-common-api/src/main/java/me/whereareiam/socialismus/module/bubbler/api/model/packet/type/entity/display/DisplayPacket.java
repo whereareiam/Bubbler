@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class DisplayPacket extends EntityPacket {
 	protected void addDisplayMetadata(List<EntityData> metadata) {
 		super.addCommonMetadata(metadata);
 
-		if (version.isAtLeast(Version.V_1_21_4)) {
+		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
 			metadata.add(new EntityData(12, EntityDataTypes.VECTOR3F, scale));
 		} else {
 			// TODO

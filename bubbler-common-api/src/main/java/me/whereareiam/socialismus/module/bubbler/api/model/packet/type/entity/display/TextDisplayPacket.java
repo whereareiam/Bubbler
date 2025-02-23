@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class TextDisplayPacket extends DisplayPacket {
 		List<EntityData> metadata = new ArrayList<>();
 		addDisplayMetadata(metadata);
 
-		if (version.isAtLeast(Version.V_1_21_4)) {
+		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
 			metadata.add(new EntityData(23, EntityDataTypes.ADV_COMPONENT, text));
 			metadata.add(new EntityData(27, EntityDataTypes.BYTE, alignment));
 		} else {
@@ -62,7 +63,9 @@ public class TextDisplayPacket extends DisplayPacket {
 		private int backgroundColor;
 
 		@Override
-		protected Builder self() { return this; }
+		protected Builder self() {
+			return this;
+		}
 
 		public Builder withText(Component text) {
 			this.text = text;
@@ -79,8 +82,7 @@ public class TextDisplayPacket extends DisplayPacket {
 			return this;
 		}
 
-		public TextDisplayPacket build(Version version) {
-			this.version = version;
+		public TextDisplayPacket build() {
 			return new TextDisplayPacket(this);
 		}
 	}
