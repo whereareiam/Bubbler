@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.type.Version;
@@ -20,7 +21,9 @@ import java.util.UUID;
 @Getter
 @SuperBuilder
 public class DisplayPacket extends EntityPacket {
+	@Builder.Default
 	private final Vector3f translation = new Vector3f(0.0F, 0.0F, 0.0F);
+	@Builder.Default
 	private final Vector3f scale = new Vector3f(1.0F, 1.0F, 1.0F);
 	private final DisplayType type;
 
