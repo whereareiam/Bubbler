@@ -1,10 +1,10 @@
-package me.whereareiam.socialismus.module.bubbler.common.packet.type.entity;
+package me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity;
 
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
 import me.whereareiam.socialismus.api.type.Version;
-import me.whereareiam.socialismus.module.bubbler.common.packet.Packet;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

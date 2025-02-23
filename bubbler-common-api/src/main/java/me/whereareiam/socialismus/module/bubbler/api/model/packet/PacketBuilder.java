@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.bubbler.common.packet;
+package me.whereareiam.socialismus.module.bubbler.api.model.packet;
 
 import me.whereareiam.socialismus.api.type.Version;
 

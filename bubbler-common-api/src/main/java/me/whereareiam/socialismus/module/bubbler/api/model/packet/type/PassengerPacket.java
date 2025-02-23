@@ -1,9 +1,9 @@
-package me.whereareiam.socialismus.module.bubbler.common.packet.type;
+package me.whereareiam.socialismus.module.bubbler.api.model.packet.type;
 
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import lombok.AllArgsConstructor;
-import me.whereareiam.socialismus.module.bubbler.common.packet.Packet;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
 
 @AllArgsConstructor
 public class PassengerPacket implements Packet {

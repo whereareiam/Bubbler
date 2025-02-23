@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.bubbler.common.packet.type.entity.living;
+package me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display;
 
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
@@ -7,19 +7,23 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.whereareiam.socialismus.api.type.Version;
-import me.whereareiam.socialismus.module.bubbler.common.packet.type.entity.EntityPacket;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ArmorStandPacket extends EntityPacket {
-	private final boolean small;
+public class TextDisplayPacket extends DisplayPacket {
+	private final Component text;
+	private final byte alignment;
+	private final int backgroundColor;
 
-	private ArmorStandPacket(Builder builder) {
+	private TextDisplayPacket(Builder builder) {
 		super(builder);
-		this.small = builder.small;
+		this.text = builder.text;
+		this.alignment = builder.alignment;
+		this.backgroundColor = builder.backgroundColor;
 	}
 
 	@Override
@@ -33,20 +37,18 @@ public class ArmorStandPacket extends EntityPacket {
 
 	private WrapperPlayServerSpawnEntity createSpawnPacket() {
 		return new WrapperPlayServerSpawnEntity(
-				entityId, Optional.of(UUID.randomUUID()), EntityTypes.ARMOR_STAND,
+				entityId, Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
 				position, 0.0F, 0.0F, 0.0F, 0, Optional.empty()
 		);
 	}
 
 	private WrapperPlayServerEntityMetadata createMetadataPacket() {
 		List<EntityData> metadata = new ArrayList<>();
-		addCommonMetadata(metadata);
-
-		byte status = 0;
-		if (small) status |= 0x01;
+		addDisplayMetadata(metadata);
 
 		if (version.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData(15, EntityDataTypes.BYTE, status));
+			metadata.add(new EntityData(23, EntityDataTypes.ADV_COMPONENT, text));
+			metadata.add(new EntityData(27, EntityDataTypes.BYTE, alignment));
 		} else {
 			// TODO
 		}
@@ -54,20 +56,32 @@ public class ArmorStandPacket extends EntityPacket {
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
 	}
 
-	public static class Builder extends EntityPacket.Builder<Builder> {
-		private boolean small;
+	public static class Builder extends DisplayPacket.Builder<Builder> {
+		private Component text;
+		private byte alignment;
+		private int backgroundColor;
 
 		@Override
 		protected Builder self() { return this; }
 
-		public Builder withSmall(boolean small) {
-			this.small = small;
+		public Builder withText(Component text) {
+			this.text = text;
 			return this;
 		}
 
-		public ArmorStandPacket build(Version version) {
+		public Builder withAlignment(byte alignment) {
+			this.alignment = alignment;
+			return this;
+		}
+
+		public Builder withBackgroundColor(int backgroundColor) {
+			this.backgroundColor = backgroundColor;
+			return this;
+		}
+
+		public TextDisplayPacket build(Version version) {
 			this.version = version;
-			return new ArmorStandPacket(this);
+			return new TextDisplayPacket(this);
 		}
 	}
 }
