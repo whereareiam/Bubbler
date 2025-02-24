@@ -10,7 +10,6 @@ import lombok.ToString;
 public class BubblerSettings {
     private int minRecipients;
     private int maxQueueSize;
-    private int headDistance;
     private Notify notify;
 
     @Getter

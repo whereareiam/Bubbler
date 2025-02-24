@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.module.bubbler.command.executor;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -15,7 +15,10 @@ import me.whereareiam.socialismus.module.bubbler.api.input.BubbleCoordinationSer
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerCommands;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
+import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
+import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -61,12 +64,36 @@ public class BubbleCommand extends CommandBase {
 		dummyPlayer.sendMessage(serializer.format(dummyPlayer, messages.get().getMessageSuccess()));
 
 		User user = PacketEvents.getAPI().getPlayerManager().getUser(dummyPlayer.getAudience());
+		TextDisplayPacket firstLine = TextDisplayPacket.builder()
+				.text(Component.text("First line text"))
+				.type(DisplayType.VERTICAL)
+				.backgroundColor(0x40FFFFFF)
+				.transparency((short) 50)
+				.translation(new Vector3f(0, 1F, 0))
+				.build();
 
-		new TextDisplayPacket.Builder()
-				.withText(Component.text("Bubble!"))
-				.withPosition(new Vector3d(0, 120, 0))
-				.build()
-				.send(user);
+		TextDisplayPacket secondLine = TextDisplayPacket.builder()
+				.text(Component.text("Second line text"))
+				.type(DisplayType.VERTICAL)
+				.backgroundColor(0x40FFFFFF)
+				.transparency((short) 50)
+				.alignment(AlignmentType.CENTER)
+				.hasShadow(true)
+				.isSeeThrough(true)
+				.translation(new Vector3f(0, 1.5F, 0))
+				.build();
+
+		firstLine.send(user);
+		secondLine.send(user);
+
+		PassengerPacket passengerPacket = PassengerPacket.builder()
+				.passengerIds(new int[]{firstLine.getEntityId(), secondLine.getEntityId()})
+				.vehicleId(user.getEntityId())
+				.build();
+
+		passengerPacket.send(user);
+
+
 	}
 
 	@Override

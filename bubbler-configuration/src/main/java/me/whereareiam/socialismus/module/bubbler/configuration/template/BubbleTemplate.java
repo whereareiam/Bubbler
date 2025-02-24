@@ -23,73 +23,71 @@ import java.util.Map;
 
 @Singleton
 public class BubbleTemplate implements DefaultConfig<BubblesConfig> {
-    @Override
-    public BubblesConfig getDefault() {
-        BubblesConfig config = new BubblesConfig();
+	@Override
+	public BubblesConfig getDefault() {
+		BubblesConfig config = new BubblesConfig();
 
-        // Default values
-        Bubble bubble = Bubble.builder()
-                .id("default")
-                .enabled(true)
-                .display(Bubble.Display.builder()
-                        .radius(50)
-                        .headLineGap(1)
-                        .lineSpacing(0.5F)
-                        .maxLinesCount(5)
-                        .maxLineWidth(100)
-                        .maxWordLength(15)
-                        .timePerSymbol(0.12)
-                        .minimumTime(1.5)
-                        .build()
-                ).format(Bubble.Format.builder()
-                        .format("<white>{message}")
-                        .initialFormat("<gold>{playerName} <white>says: \n")
-                        .finalFormat("<white>.")
-                        .queuedFormat("<white>...")
-                        .separatorFormat("-")
-                        .build()
-                ).style(Bubble.Style.builder()
-                        .animation(AnimationType.POPOUT)
-                        .display(DisplayType.CENTER)
-                        .transparency(true)
-                        .scale(new Vector(1.0f, 1.0f, 1.0f))
-                        .background(Bubble.Style.BackgroundStyle.builder()
-                                .color("#000000")
-                                .opacity(40)
-                                .build()
-                        ).text(Bubble.Style.TextStyle.builder()
-                                .alignment(AlignmentType.CENTER)
-                                .shadow(false)
-                                .build()
-                        ).build()
-                ).transitions(Map.of(
-                        TransitionType.BEFORE, BubbleTransition.builder()
-                                .sound(BubbleTransition.Sound.builder().sound("BLOCK_BELL_USE").pitch(1.0f).volume(1.0f).build())
-                                .particle("CLOUD")
-                                .build(),
-                        TransitionType.INTER, BubbleTransition.builder()
-                                .sound(BubbleTransition.Sound.builder().sound("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
-                                .particle(null)
-                                .build()
-                )).requirements(Map.of(
-                        Participants.SENDER, RequirementGroup.builder()
-                                .operator(RequirementOperatorType.OR)
-                                .groups(Map.of(
-                                        RequirementType.CHAT, ChatRequirement.builder()
-                                                .condition(RequirementConditionType.HAS)
-                                                .expected("true")
-                                                .chatIdentifiers(List.of("null", "fallback", "local"))
-                                                .build(),
-                                        RequirementType.PLACEHOLDER, PlaceholderRequirement.builder()
-                                                .condition(RequirementConditionType.EQUALS)
-                                                .expected("1|2")
-                                                .placeholders(List.of("%player_gamemode%"))
-                                                .build()
-                                )).build()
-                )).build();
+		// Default values
+		Bubble bubble = Bubble.builder()
+				.id("default")
+				.enabled(true)
+				.display(Bubble.Display.builder()
+						.radius(50)
+						.headLineGap(0.3F)
+						.lineSpacing(0.2F)
+						.maxLinesCount(5)
+						.maxLineWidth(30)
+						.timePerSymbol(0.12)
+						.minimumTime(1.5)
+						.build()
+				).format(Bubble.Format.builder()
+						.format("<white>{message}")
+						.initialFormat("<gold>{playerName} <white>says: \n")
+						.finalFormat("<white>.")
+						.queuedFormat("<white>...")
+						.separatorFormat("-")
+						.build()
+				).style(Bubble.Style.builder()
+						.animation(AnimationType.POPOUT)
+						.display(DisplayType.CENTER)
+						.seeThrough(true)
+						.scale(new Vector(1.0f, 1.0f, 1.0f))
+						.background(Bubble.Style.BackgroundStyle.builder()
+								.color("#000000")
+								.build()
+						).text(Bubble.Style.TextStyle.builder()
+								.alignment(AlignmentType.CENTER)
+								.shadow(false)
+								.build()
+						).build()
+				).transitions(Map.of(
+						TransitionType.BEFORE, BubbleTransition.builder()
+								.sound(BubbleTransition.Sound.builder().sound("BLOCK_BELL_USE").pitch(1.0f).volume(1.0f).build())
+								.particle("CLOUD")
+								.build(),
+						TransitionType.INTER, BubbleTransition.builder()
+								.sound(BubbleTransition.Sound.builder().sound("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
+								.particle(null)
+								.build()
+				)).requirements(Map.of(
+						Participants.SENDER, RequirementGroup.builder()
+								.operator(RequirementOperatorType.OR)
+								.groups(Map.of(
+										RequirementType.CHAT, ChatRequirement.builder()
+												.condition(RequirementConditionType.HAS)
+												.expected("true")
+												.chatIdentifiers(List.of("null", "fallback", "local"))
+												.build(),
+										RequirementType.PLACEHOLDER, PlaceholderRequirement.builder()
+												.condition(RequirementConditionType.EQUALS)
+												.expected("1|2")
+												.placeholders(List.of("%player_gamemode%"))
+												.build()
+								)).build()
+				)).build();
 
-        config.getBubbles().add(bubble);
+		config.getBubbles().add(bubble);
 
-        return config;
-    }
+		return config;
+	}
 }

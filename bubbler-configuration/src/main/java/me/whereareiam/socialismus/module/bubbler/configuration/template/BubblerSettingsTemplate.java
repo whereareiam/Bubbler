@@ -13,7 +13,6 @@ public class BubblerSettingsTemplate implements DefaultConfig<BubblerSettings> {
         // Default values
         config.setMinRecipients(1);
         config.setMaxQueueSize(30);
-        config.setHeadDistance(1);
 
         BubblerSettings.Notify notify = new BubblerSettings.Notify();
         notify.setNotifyNoPlayers(true);

@@ -40,7 +40,6 @@ public class Bubble {
 
 		private int maxLinesCount;
 		private int maxLineWidth;
-		private int maxWordLength;
 
 		private double timePerSymbol;
 		private double minimumTime;
@@ -65,7 +64,7 @@ public class Bubble {
 	public static class Style {
 		private AnimationType animation;
 		private DisplayType display;
-		private boolean transparency;
+		private boolean seeThrough;
 		private Vector scale;
 
 		private BackgroundStyle background;
@@ -77,7 +76,7 @@ public class Bubble {
 		@SuperBuilder(toBuilder = true)
 		public static class BackgroundStyle {
 			private String color;
-			private int opacity;
+			private short transparency;
 
 			public int getColor() {
 				return Integer.parseInt(

@@ -1,12 +1,10 @@
 package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.ComponentUtil;
 import me.whereareiam.socialismus.api.input.WorkerProcessor;
 import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
@@ -14,50 +12,44 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 
 @Singleton
 public class ContentTimeEvaluator {
-  private final LoggingHelper loggingHelper;
-  private final Provider<Settings> settings;
+	private final LoggingHelper loggingHelper;
 
-  @Inject
-  public ContentTimeEvaluator(
-      LoggingHelper loggingHelper,
-      WorkerProcessor<BubbleMessage> workerProcessor,
-      Provider<Settings> settings) {
-    this.loggingHelper = loggingHelper;
-    this.settings = settings;
+	@Inject
+	public ContentTimeEvaluator(LoggingHelper loggingHelper, WorkerProcessor<BubbleMessage> workerProcessor) {
+		this.loggingHelper = loggingHelper;
 
-    workerProcessor.addWorker(new Worker<>(this::evaluateTime, 200, true, false));
-  }
+		workerProcessor.addWorker(new Worker<>(this::evaluateTime, 200, true, false));
+	}
 
-  public BubbleMessage evaluateTime(BubbleMessage bubbleMessage) {
-    loggingHelper.debug("Evaluating display time for " + bubbleMessage.getSender().getUsername());
+	public BubbleMessage evaluateTime(BubbleMessage bubbleMessage) {
+		loggingHelper.debug("Evaluating display time for " + bubbleMessage.getSender().getUsername());
 
-    bubbleMessage.getGroups()
-            .forEach(group -> group.getLines()
-                    .forEach(line -> {
-                          long displayTime =
-                              calculateDisplayTime(
-                                  ComponentUtil.toPlain(line.getContent()), bubbleMessage.getBubble());
-                          line.setDisplayTime(displayTime);
-                        }));
+		bubbleMessage.getGroups()
+				.forEach(group -> group.getLines()
+						.forEach(line -> {
+							long displayTime =
+									calculateDisplayTime(
+											ComponentUtil.toPlain(line.getContent()), bubbleMessage.getBubble());
+							line.setDisplayTime(displayTime);
+						}));
 
-    if (settings.get().getLevel() >= 3)
-      loggingHelper.debug(
-          "Display time for "
-              + bubbleMessage.getSender().getUsername()
-              + " is "
-              + bubbleMessage.getGroups().stream().mapToLong(group ->
-                  group.getLines().stream().mapToLong(BubbleLine::getDisplayTime).sum()
-                  ).sum());
+		loggingHelper.debug(
+				"Display time for "
+						+ bubbleMessage.getSender().getUsername()
+						+ " is "
+						+ bubbleMessage.getGroups().stream().mapToLong(group ->
+						group.getLines().stream().mapToLong(BubbleLine::getDisplayTime).sum()
+				).sum());
 
-    return bubbleMessage;
-  }
+		return bubbleMessage;
+	}
 
-  private long calculateDisplayTime(String content, Bubble bubble) {
-    int symbolCount = content.length();
-    double timePerSymbol = bubble.getDisplay().getTimePerSymbol();
-    double minimumTime = bubble.getDisplay().getMinimumTime();
+	private long calculateDisplayTime(String content, Bubble bubble) {
+		int symbolCount = content.length();
+		double timePerSymbol = bubble.getDisplay().getTimePerSymbol();
+		double minimumTime = bubble.getDisplay().getMinimumTime();
 
-    long calculatedTime = (long) (symbolCount * timePerSymbol);
-    return Math.max(calculatedTime, (long) minimumTime);
-  }
+		long calculatedTime = (long) (symbolCount * timePerSymbol);
+		return Math.max(calculatedTime, (long) minimumTime);
+	}
 }

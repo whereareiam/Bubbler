@@ -14,7 +14,6 @@ allprojects {
 subprojects {
     repositories {
         mavenCentral()
-        mavenLocal()
 
         maven("https://jitpack.io")
         maven("https://repo.codemc.io/repository/maven-releases/")
