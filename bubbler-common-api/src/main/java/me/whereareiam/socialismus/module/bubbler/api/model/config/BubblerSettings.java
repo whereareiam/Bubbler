@@ -3,21 +3,23 @@ package me.whereareiam.socialismus.module.bubbler.api.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.socialismus.module.bubbler.api.type.BubbleType;
 
 @Getter
 @Setter
 @ToString
 public class BubblerSettings {
-    private int minRecipients;
-    private int maxQueueSize;
-    private Notify notify;
+	private BubbleType bubbleType;
+	private int minRecipients;
+	private int maxQueueSize;
+	private Notify notify;
 
-    @Getter
-    @Setter
-    @ToString
-    public static class Notify {
-        private boolean notifyNoPlayers;
-        private boolean notifyNoNearbyPlayers;
-        private boolean notifyNoBubbleSelected;
-    }
+	@Getter
+	@Setter
+	@ToString
+	public static class Notify {
+		private boolean notifyNoPlayers;
+		private boolean notifyNoNearbyPlayers;
+		private boolean notifyNoBubbleSelected;
+	}
 }
