@@ -13,25 +13,24 @@ import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSetting
 
 @Singleton
 public class ChatBroadcastListener implements EventListener {
-    private final BubbleCoordinationService coordinationService;
-    private final Provider<BubblerSettings> bubblerSettings;
+	private final BubbleCoordinationService coordinationService;
+	private final Provider<BubblerSettings> bubblerSettings;
 
-    @Inject
-    public ChatBroadcastListener(BubbleCoordinationService coordinationService, Provider<BubblerSettings> bubblerSettings) {
-        this.coordinationService = coordinationService;
-        this.bubblerSettings = bubblerSettings;
-    }
+	@Inject
+	public ChatBroadcastListener(BubbleCoordinationService coordinationService, Provider<BubblerSettings> bubblerSettings) {
+		this.coordinationService = coordinationService;
+		this.bubblerSettings = bubblerSettings;
+	}
 
-    @SocialisticEvent(EventOrder.NORMAL)
-    public void onChatBroadcast(ChatBroadcastEvent event) {
-        if (event.getChatMessage().getChat().getParameters().getType().isGlobal()) return;
-        if (event.getChatMessage().getRecipients().size() <= bubblerSettings.get().getMinRecipients()) return;
+	@SocialisticEvent(EventOrder.NORMAL)
+	public void onChatBroadcast(ChatBroadcastEvent event) {
+		if (event.getChatMessage().getRecipients().size() <= bubblerSettings.get().getMinRecipients()) return;
 
-        coordinationService.coordinate(BubbleMessage.builder()
-                .sender(event.getChatMessage().getSender())
-                .recipients(event.getChatMessage().getRecipients())
-                .content(event.getChatMessage().getContent())
-                .build()
-        );
-    }
+		coordinationService.coordinate(BubbleMessage.builder()
+				.sender(event.getChatMessage().getSender())
+				.recipients(event.getChatMessage().getRecipients())
+				.content(event.getChatMessage().getContent())
+				.build()
+		);
+	}
 }
