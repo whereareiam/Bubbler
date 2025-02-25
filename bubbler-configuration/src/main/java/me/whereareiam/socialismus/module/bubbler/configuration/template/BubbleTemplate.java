@@ -54,6 +54,7 @@ public class BubbleTemplate implements DefaultConfig<BubblesConfig> {
 						.scale(new Vector(1.0f, 1.0f, 1.0f))
 						.background(Bubble.Style.BackgroundStyle.builder()
 								.color("#000000")
+								.transparency((short) 0)
 								.build()
 						).text(Bubble.Style.TextStyle.builder()
 								.alignment(AlignmentType.CENTER)
@@ -62,12 +63,10 @@ public class BubbleTemplate implements DefaultConfig<BubblesConfig> {
 						).build()
 				).transitions(Map.of(
 						TransitionType.BEFORE, BubbleTransition.builder()
-								.sound(BubbleTransition.Sound.builder().sound("BLOCK_BELL_USE").pitch(1.0f).volume(1.0f).build())
-								.particle("CLOUD")
+								.sound(BubbleTransition.Sound.builder().type("BLOCK_BELL_USE").pitch(1.0f).volume(1.0f).build())
 								.build(),
 						TransitionType.INTER, BubbleTransition.builder()
-								.sound(BubbleTransition.Sound.builder().sound("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
-								.particle(null)
+								.sound(BubbleTransition.Sound.builder().type("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
 								.build()
 				)).requirements(Map.of(
 						Participants.SENDER, RequirementGroup.builder()
@@ -80,7 +79,7 @@ public class BubbleTemplate implements DefaultConfig<BubblesConfig> {
 												.build(),
 										RequirementType.PLACEHOLDER, PlaceholderRequirement.builder()
 												.condition(RequirementConditionType.EQUALS)
-												.expected("1|2")
+												.expected("CREATIVE|ADVENTURE")
 												.placeholders(List.of("%player_gamemode%"))
 												.build()
 								)).build()

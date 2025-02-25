@@ -10,16 +10,16 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class BubbleTransition {
-    private Sound sound;
-    private String particle;
+	private Sound sound;
 
-    @Getter
-    @ToString
-    @NoArgsConstructor
-    @SuperBuilder(toBuilder = true)
-    public static class Sound {
-        private String sound;
-        private float volume;
-        private float pitch;
-    }
+	@Getter
+	@ToString
+	@NoArgsConstructor
+	@SuperBuilder(toBuilder = true)
+	public static class Sound {
+		private String type;
+		private float volume;
+		private float pitch;
+		private boolean fade;
+	}
 }
