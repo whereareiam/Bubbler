@@ -26,6 +26,7 @@ public class BubbleCoordinator implements BubbleCoordinationService {
 	public void coordinate(BubbleMessage bubbleMessage) {
 		loggingHelper.debug("Coordinating bubble message for: " + bubbleMessage.getSender().getUsername());
 		bubbleMessage = bubbleMessageProcessor.process(bubbleMessage);
+		if (bubbleMessage.isCancelled()) return;
 
 		loggingHelper.debug("Animating bubble message for: " + bubbleMessage.getSender().getUsername() + " with animation: "
 				+ bubbleMessage.getBubble().getStyle().getAnimation());
