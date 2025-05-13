@@ -38,7 +38,7 @@ jobs:
         run: mkdir output
 
       - name: Move Artifact
-        run: mv bubbler-bootstrap/build/libs/${{ env.NAME }}-${{ env.VERSION }}.jar output/${{ env.NAME }}-${{ env.VERSION }}.jar
+        run: mv build/libs/${{ env.NAME }}-${{ env.VERSION }}.jar output/${{ env.NAME }}-${{ env.VERSION }}.jar
 
       - name: Release
         uses: softprops/action-gh-release@v2
