@@ -5,11 +5,11 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.ComponentUtil;
+import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.api.util.ComponentUtil;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.*;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.DestroyEntitiesPacket;
@@ -23,17 +23,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StaticBubbleAnimation extends BubbleAnimation {
 
 	private final ConcurrentHashMap<DummyPlayer, BubbleQueue> playerQueues = new ConcurrentHashMap<>();
-	private final LoggingHelper loggingHelper;
 
 	@Inject
-	public StaticBubbleAnimation(Scheduler scheduler, LoggingHelper loggingHelper) {
+	public StaticBubbleAnimation(Scheduler scheduler) {
 		super(scheduler);
-		this.loggingHelper = loggingHelper;
 	}
 
 	@Override
 	public void display(BubbleMessage bubbleMessage) {
-		loggingHelper.debug("Displaying bubble message for: " + bubbleMessage.getSender().getUsername());
+		Logger.debug("Displaying bubble message for: " + bubbleMessage.getSender().getUsername());
 
 		BubbleQueue queue = playerQueues.computeIfAbsent(bubbleMessage.getSender(), p -> new BubbleQueue());
 		queue.addMessage(bubbleMessage);
@@ -49,11 +47,8 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 		);
 	}
 
-	private void showGroupAndScheduleRemoval(DummyPlayer sender,
-	                                         BubbleMessage bubbleMessage,
-	                                         BubbleGroup group,
-	                                         BubbleQueue queue) {
-		loggingHelper.debug("Showing group for bubbleMessage from " + bubbleMessage.getSender().getUsername());
+	private void showGroupAndScheduleRemoval(DummyPlayer sender, BubbleMessage bubbleMessage, BubbleGroup group, BubbleQueue queue) {
+		Logger.debug("Showing group for bubbleMessage from " + bubbleMessage.getSender().getUsername());
 
 		Set<DummyPlayer> recipients = bubbleMessage.getRecipients();
 		Bubble bubble = bubbleMessage.getBubble();
@@ -69,7 +64,7 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 			BubbleLine line = lines.get(i);
 			float yOffset = headLineGap + (i * lineSpacing);
 
-			loggingHelper.debug("Creating TextDisplayPacket for line: " + ComponentUtil.toPlain(line.getContent()) + " [" + i + "]");
+			Logger.debug("Creating TextDisplayPacket for line: " + ComponentUtil.toPlain(line.getContent()) + " [" + i + "]");
 			TextDisplayPacket textPacket = createTextDisplayPacket(bubble, line, yOffset);
 			recipients.forEach(r -> textPacket.send(getUser(r)));
 			entityIds.add(textPacket.getEntityId());
@@ -118,7 +113,7 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 	}
 
 	private PassengerPacket createPassengerPacket(User user, List<Integer> entityIds) {
-		loggingHelper.debug("Creating passenger packet for user: " + user.getProfile().getName());
+		Logger.debug("Creating passenger packet for user: " + user.getProfile().getName());
 		return PassengerPacket.builder()
 				.passengerIds(entityIds.stream().mapToInt(Integer::intValue).toArray())
 				.vehicleId(user.getEntityId())
@@ -126,7 +121,7 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 	}
 
 	private void destroyGroupEntities(Map<DummyPlayer, List<Integer>> entities) {
-		loggingHelper.debug("Destroying displayed entities for " + entities.size() + " recipients");
+		Logger.debug("Destroying displayed entities for " + entities.size() + " recipients");
 		entities.forEach((recipient, entityIds) -> {
 			User user = PacketEvents.getAPI().getPlayerManager().getUser(recipient.getAudience());
 			if (user != null) {

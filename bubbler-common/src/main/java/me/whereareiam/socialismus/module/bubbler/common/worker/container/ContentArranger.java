@@ -2,12 +2,12 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.ComponentUtil;
+import me.whereareiam.socialismus.api.Logger;
+import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.serializer.SerializationService;
 import me.whereareiam.socialismus.api.model.Worker;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
+import me.whereareiam.socialismus.api.util.ComponentUtil;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
@@ -22,26 +22,19 @@ import java.util.List;
 public class ContentArranger {
 	private static final String MESSAGE_PLACEHOLDER = "{message}";
 
-	private final LoggingHelper loggingHelper;
-	private final SerializationService serializer;
-
 	@Inject
-	public ContentArranger(LoggingHelper loggingHelper, WorkerProcessor<BubbleMessage> workerProcessor,
-	                       SerializationService serializer) {
-		this.loggingHelper = loggingHelper;
-		this.serializer = serializer;
-
+	public ContentArranger(WorkerProcessor<BubbleMessage> workerProcessor) {
 		workerProcessor.addWorker(new Worker<>(this::arrangeContent, 150, false, false));
 	}
 
 	public BubbleMessage arrangeContent(BubbleMessage bubbleMessage) {
-		loggingHelper.debug("Arranging content for " + bubbleMessage.getSender().getUsername());
+		Logger.debug("Arranging content for " + bubbleMessage.getSender().getUsername());
 
 		String content = ComponentUtil.toString(bubbleMessage.getContent());
 		List<String> lines = formatContent(bubbleMessage, content);
 		List<BubbleGroup> groupedLines = createBubbleGroups(bubbleMessage, lines);
 
-		loggingHelper.debug("Putting " + lines.size() + " lines into " + groupedLines.size() + " groups");
+		Logger.debug("Putting " + lines.size() + " lines into " + groupedLines.size() + " groups");
 		bubbleMessage.setGroups(new LinkedList<>(groupedLines));
 
 		return bubbleMessage;
@@ -98,7 +91,7 @@ public class ContentArranger {
 			String line = lines.get(i);
 
 			BubbleLine bubbleLine = BubbleLine.builder()
-					.content(serializer.format(bubbleMessage.getSender(), line))
+					.content(Serializer.serialize(bubbleMessage.getSender(), line))
 					.build();
 			currentGroup.getLines().add(bubbleLine);
 
@@ -133,7 +126,7 @@ public class ContentArranger {
 		BubbleLine updatedLine = BubbleLine.builder()
 				.content(
 						lastLine.getContent().append(
-								serializer.format(bubbleMessage.getSender(), queuedFormat)
+								Serializer.serialize(bubbleMessage.getSender(), queuedFormat)
 						)
 				)
 				.build();
@@ -160,7 +153,7 @@ public class ContentArranger {
 			List<BubbleLine> newLines = new ArrayList<>();
 
 			for (String part : parts)
-				newLines.add(BubbleLine.builder().content(serializer.format(sender, part)).build());
+				newLines.add(BubbleLine.builder().content(Serializer.serialize(sender, part)).build());
 
 			if (isInitial) {
 				newLines.addAll(bubbleLines);
@@ -176,12 +169,12 @@ public class ContentArranger {
 			if (isInitial) {
 				line =
 						BubbleLine.builder()
-								.content(serializer.format(sender, format).append(line.getContent()))
+								.content(Serializer.serialize(sender, format).append(line.getContent()))
 								.build();
 			} else {
 				line =
 						BubbleLine.builder()
-								.content(line.getContent().append(serializer.format(sender, format)))
+								.content(line.getContent().append(Serializer.serialize(sender, format)))
 								.build();
 			}
 

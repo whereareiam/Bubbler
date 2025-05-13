@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.api.type.Participants;
+import me.whereareiam.socialismus.api.type.chat.Participants;
 import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
 import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;

@@ -17,8 +17,17 @@ tasks.withType<ShadowJar> {
     archiveClassifier.set("")
 
     relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
+    relocate("com.fasterxml.jackson", "me.whereareiam.socialismus.library.jackson")
 
-    destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+    val defaultDestination = rootProject.layout.buildDirectory.dir("libs")
+
+    val customOutputDir = if (project.hasProperty("output")) {
+        project.layout.dir(project.provider { File(project.property("output").toString()) })
+    } else {
+        null
+    }
+
+    destinationDirectory.set(customOutputDir ?: defaultDestination)
 }
 
 tasks.named<Copy>("processResources") {

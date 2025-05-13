@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.serializer.SerializationService;
+import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.model.CommandEntity;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.command.CommandBase;
@@ -31,19 +31,18 @@ import java.util.Set;
 @Singleton
 public class BubbleCommand extends CommandBase {
 	private static final String COMMAND_NAME = "bubble";
-
-	private final SerializationService serializer;
 	private final BubbleCoordinationService coordinationService;
-
 	private final Provider<BubblerCommands> commands;
 	private final Provider<BubblerMessages> messages;
 
 	@Inject
-	public BubbleCommand(SerializationService serializer, BubbleCoordinationService coordinationService, Provider<BubblerCommands> commands,
-	                     Provider<BubblerMessages> messages) {
+	public BubbleCommand(
+			BubbleCoordinationService coordinationService,
+			Provider<BubblerCommands> commands,
+			Provider<BubblerMessages> messages
+	) {
 		super(COMMAND_NAME);
 
-		this.serializer = serializer;
 		this.coordinationService = coordinationService;
 		this.commands = commands;
 		this.messages = messages;
@@ -61,7 +60,7 @@ public class BubbleCommand extends CommandBase {
 				.build()
 		);
 
-		dummyPlayer.sendMessage(serializer.format(dummyPlayer, messages.get().getMessageSuccess()));
+		dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, messages.get().getMessageSuccess()));
 
 		User user = PacketEvents.getAPI().getPlayerManager().getUser(dummyPlayer.getAudience());
 		TextDisplayPacket firstLine = TextDisplayPacket.builder()

@@ -2,27 +2,25 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.ComponentUtil;
+import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.WorkerProcessor;
 import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
+import me.whereareiam.socialismus.api.util.ComponentUtil;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 
 @Singleton
 public class ContentTimeEvaluator {
-	private final LoggingHelper loggingHelper;
 
 	@Inject
-	public ContentTimeEvaluator(LoggingHelper loggingHelper, WorkerProcessor<BubbleMessage> workerProcessor) {
-		this.loggingHelper = loggingHelper;
+	public ContentTimeEvaluator(WorkerProcessor<BubbleMessage> workerProcessor) {
 
 		workerProcessor.addWorker(new Worker<>(this::evaluateTime, 200, true, false));
 	}
 
 	public BubbleMessage evaluateTime(BubbleMessage bubbleMessage) {
-		loggingHelper.debug("Evaluating display time for " + bubbleMessage.getSender().getUsername());
+		Logger.debug("Evaluating display time for " + bubbleMessage.getSender().getUsername());
 
 		bubbleMessage.getGroups()
 				.forEach(group -> group.getLines()
@@ -33,7 +31,7 @@ public class ContentTimeEvaluator {
 							line.setDisplayTime(displayTime);
 						}));
 
-		loggingHelper.debug(
+		Logger.debug(
 				"Display time for "
 						+ bubbleMessage.getSender().getUsername()
 						+ " is "
