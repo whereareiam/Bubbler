@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.api.output.Scheduler;
 import me.whereareiam.socialismus.api.util.ComponentUtil;
@@ -15,13 +16,13 @@ import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.Passenger
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.DestroyEntitiesPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
 import me.whereareiam.socialismus.module.bubbler.common.animation.BubbleQueue;
+import me.whereareiam.socialismus.module.bubbler.common.util.PacketUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class StaticBubbleAnimation extends BubbleAnimation {
-
 	private final ConcurrentHashMap<DummyPlayer, BubbleQueue> playerQueues = new ConcurrentHashMap<>();
 
 	@Inject
@@ -63,9 +64,10 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 		for (int i = 0; i < lines.size(); i++) {
 			BubbleLine line = lines.get(i);
 			float yOffset = headLineGap + (i * lineSpacing);
+			Position position = sender.getEyePosition();
 
 			Logger.debug("Creating TextDisplayPacket for line: " + ComponentUtil.toPlain(line.getContent()) + " [" + i + "]");
-			TextDisplayPacket textPacket = createTextDisplayPacket(bubble, line, yOffset);
+			TextDisplayPacket textPacket = createTextDisplayPacket(bubble, line, yOffset, position);
 			recipients.forEach(r -> textPacket.send(getUser(r)));
 			entityIds.add(textPacket.getEntityId());
 		}
@@ -97,10 +99,15 @@ public class StaticBubbleAnimation extends BubbleAnimation {
 		);
 	}
 
-	private TextDisplayPacket createTextDisplayPacket(Bubble bubble, BubbleLine line, float yOffset) {
+	private TextDisplayPacket createTextDisplayPacket(
+			Bubble bubble,
+			BubbleLine line,
+			float yOffset,
+			Position position
+	) {
 		Bubble.Style style = bubble.getStyle();
-
 		return TextDisplayPacket.builder()
+				.position(PacketUtil.toVector3d(position))
 				.text(line.getContent())
 				.type(style.getDisplay())
 				.backgroundColor(style.getBackground().getColor())
