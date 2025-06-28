@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.bubbler.common.animation;
+package me.whereareiam.socialismus.module.bubbler.common.animation.type.queue;
 
 import lombok.Getter;
 import lombok.Setter;

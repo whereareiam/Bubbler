@@ -1,0 +1,104 @@
+package me.whereareiam.socialismus.module.bubbler.common.animation.type.queue;
+
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.player.User;
+import com.github.retrooper.packetevents.util.Vector3f;
+import lombok.NonNull;
+import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.api.model.position.Position;
+import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.module.bubbler.api.model.bubble.*;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.DestroyEntitiesPacket;
+import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
+import me.whereareiam.socialismus.module.bubbler.common.util.PacketUtil;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public abstract class AbstractQueuedAnimation extends BubbleAnimation {
+
+	private final Map<DummyPlayer, BubbleQueue> queues = new ConcurrentHashMap<>();
+
+	protected AbstractQueuedAnimation(Scheduler scheduler) {
+		super(scheduler);
+	}
+
+	@Override
+	public final void display(@NonNull BubbleMessage message) {
+		DummyPlayer sender = message.getSender();
+		BubbleQueue queue = queues.computeIfAbsent(sender, $ -> new BubbleQueue());
+
+		queue.addMessage(message);
+
+		if (!queue.isProcessing()) {
+			nextGroup(sender, queue);
+		}
+	}
+
+	protected final void nextGroup(DummyPlayer sender, BubbleQueue queue) {
+		queue.processNextGroup(
+				(msg, grp) -> playGroup(sender, msg, grp, queue),
+				() -> nextGroup(sender, queue)
+		);
+	}
+
+	/**
+	 * Sub-classes implement their visual behaviour here.
+	 * <p>
+	 * The call **must** end with {@code queue.setProcessing(false)} and then
+	 * either call {@link #nextGroup(DummyPlayer, BubbleQueue)} again or remove
+	 * the just-finished message if all groups are done.
+	 */
+	protected abstract void playGroup(
+			DummyPlayer sender,
+			BubbleMessage message,
+			BubbleGroup group,
+			BubbleQueue queue
+	);
+
+	protected TextDisplayPacket textPacket(
+			Bubble bubble, BubbleLine line, float yOffset, Position eyePos
+	) {
+		Bubble.Style s = bubble.getStyle();
+		return TextDisplayPacket.builder()
+				.position(PacketUtil.toVector3d(eyePos))
+				.text(line.getContent())
+				.type(s.getDisplay())
+				.backgroundColor(s.getBackground().getColor())
+				.transparency(s.getBackground().getTransparency())
+				.alignment(s.getText().getAlignment())
+				.hasShadow(s.getText().isShadow())
+				.isSeeThrough(s.isSeeThrough())
+				.translation(new Vector3f(0, yOffset, 0))
+				.build();
+	}
+
+	protected PassengerPacket passengerPacket(User user, int[] entityIds) {
+		return PassengerPacket.builder()
+				.vehicleId(user.getEntityId())
+				.passengerIds(entityIds)
+				.build();
+	}
+
+	protected void destroyEntities(Map<DummyPlayer, List<Integer>> map) {
+		map.forEach((player, ids) -> {
+			User user = PacketEvents.getAPI()
+					.getPlayerManager()
+					.getUser(player.getAudience());
+			if (user != null) {
+				DestroyEntitiesPacket.builder()
+						.entityIds(ids.stream().mapToInt(Integer::intValue).toArray())
+						.build()
+						.send(user);
+			}
+		});
+	}
+
+	protected User user(DummyPlayer dummy) {
+		return PacketEvents.getAPI()
+				.getPlayerManager()
+				.getUser(dummy.getAudience());
+	}
+}
