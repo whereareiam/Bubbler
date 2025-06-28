@@ -1,6 +1,8 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
@@ -9,6 +11,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.AbstractQueuedAnimation;
@@ -16,10 +19,15 @@ import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.Bub
 
 import java.util.*;
 
+@Singleton
 public final class PopoutBubbleAnimation extends AbstractQueuedAnimation {
+	private final Provider<BubblerSettings> settings;
+
 	@Inject
-	public PopoutBubbleAnimation(Scheduler scheduler) {
+	public PopoutBubbleAnimation(Scheduler scheduler, Provider<BubblerSettings> settings) {
 		super(scheduler);
+
+		this.settings = settings;
 	}
 
 	@Override
@@ -81,7 +89,7 @@ public final class PopoutBubbleAnimation extends AbstractQueuedAnimation {
 			map.put(sender, currentIds);
 		}
 
-		long delayMs = lines.get(index).getDisplayTime() * 500L;
+		long delayMs = lines.get(index).getDisplayTime() * settings.get().getAnimation().getPopoutDelay();
 		scheduler.schedule(
 				DelayedRunnableTask.builder()
 						.module("bubbler")

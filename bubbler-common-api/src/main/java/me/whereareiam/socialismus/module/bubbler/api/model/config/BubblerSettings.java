@@ -13,6 +13,7 @@ public class BubblerSettings {
 	private int minRecipients;
 	private int maxQueueSize;
 	private Notify notify;
+	private Animation animation;
 
 	@Getter
 	@Setter
@@ -21,5 +22,13 @@ public class BubblerSettings {
 		private boolean notifyNoPlayers;
 		private boolean notifyNoNearbyPlayers;
 		private boolean notifyNoBubbleSelected;
+	}
+
+	@Getter
+	@Setter
+	@ToString
+	public static class Animation {
+		private int popoutDelay;
+		private int expansionDelay;
 	}
 }

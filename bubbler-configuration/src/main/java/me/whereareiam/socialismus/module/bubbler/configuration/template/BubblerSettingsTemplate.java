@@ -23,6 +23,12 @@ public class BubblerSettingsTemplate implements DefaultConfig<BubblerSettings> {
 
 		config.setNotify(notify);
 
+		BubblerSettings.Animation animation = new BubblerSettings.Animation();
+		animation.setPopoutDelay(500);
+		animation.setExpansionDelay(500);
+
+		config.setAnimation(animation);
+
 		return config;
 	}
 }
