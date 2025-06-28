@@ -59,10 +59,10 @@ public class BubbleCommand extends CommandBase {
 		CommandEntity command = commands.get().getCommands().get("bubble");
 
 		return Map.of(
-				"command." + command.getAliases().getFirst() + ".name", command.getUsage().replace("{alias}", String.join("|", command.getAliases())),
-				"command." + command.getAliases().getFirst() + ".permission", command.getPermission(),
-				"command." + command.getAliases().getFirst() + ".description", command.getDescription(),
-				"command." + command.getAliases().getFirst() + ".usage", command.getUsage()
+				"command." + command.getAliases().get(0) + ".name", command.getUsage().replace("{alias}", String.join("|", command.getAliases())),
+				"command." + command.getAliases().get(0) + ".permission", command.getPermission(),
+				"command." + command.getAliases().get(0) + ".description", command.getDescription(),
+				"command." + command.getAliases().get(0) + ".usage", command.getUsage()
 		);
 	}
 }
