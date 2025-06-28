@@ -12,29 +12,29 @@ import java.util.LinkedList;
 @Getter
 @Singleton
 public class BubbleMessageProcessor implements WorkerProcessor<BubbleMessage> {
-    private final LinkedList<Worker<BubbleMessage>> workers = new LinkedList<>();
+	private final LinkedList<Worker<BubbleMessage>> workers = new LinkedList<>();
 
-    public BubbleMessage process(BubbleMessage bubbleMessage) {
-        for (Worker<BubbleMessage> worker : workers) {
-            bubbleMessage = worker.getFunction().apply(bubbleMessage);
+	public BubbleMessage process(BubbleMessage bubbleMessage) {
+		for (Worker<BubbleMessage> worker : workers) {
+			bubbleMessage = worker.getFunction().apply(bubbleMessage);
 
-            if (bubbleMessage.isCancelled()) break;
-        }
+			if (bubbleMessage.isCancelled()) break;
+		}
 
-        return bubbleMessage;
-    }
+		return bubbleMessage;
+	}
 
-    @Override
-    public void addWorker(Worker<BubbleMessage> worker) {
-        if (workers.stream().noneMatch(w -> w.getPriority() == worker.getPriority())) {
-            workers.add(worker);
-            workers.sort(Comparator.comparingInt(Worker::getPriority));
-        }
-    }
+	@Override
+	public void addWorker(Worker<BubbleMessage> worker) {
+		if (workers.stream().noneMatch(w -> w.getPriority() == worker.getPriority())) {
+			workers.add(worker);
+			workers.sort(Comparator.comparingInt(Worker::getPriority));
+		}
+	}
 
-    @Override
-    public boolean removeWorker(Worker<BubbleMessage> worker) {
-        if (!worker.isRemovable()) return false;
-        return workers.remove(worker);
-    }
+	@Override
+	public boolean removeWorker(Worker<BubbleMessage> worker) {
+		if (!worker.isRemovable()) return false;
+		return workers.remove(worker);
+	}
 }

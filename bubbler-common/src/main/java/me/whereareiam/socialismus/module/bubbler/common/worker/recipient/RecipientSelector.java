@@ -48,6 +48,8 @@ public class RecipientSelector {
 			return bubbleMessage;
 		}
 
+		int minimumRecipients = settings.get().getMinRecipients();
+
 		Bubble bubble = bubbleMessage.getBubble();
 		DummyPlayer sender = bubbleMessage.getSender();
 
@@ -59,8 +61,8 @@ public class RecipientSelector {
 				.filter(recipient -> requirementEvaluator.check(bubble.getRequirements().get(Participants.RECIPIENT), recipient))
 				.collect(Collectors.toSet());
 
-		if (recipients.size() <= 1) bubbleMessage.setCancelled(true);
-		if (recipients.size() <= 1 && settings.get().getNotify().isNotifyNoNearbyPlayers()) {
+		if (recipients.size() <= minimumRecipients) bubbleMessage.setCancelled(true);
+		if (recipients.size() <= minimumRecipients && settings.get().getNotify().isNotifyNoNearbyPlayers()) {
 			sender.sendMessage(Serializer.serialize(sender, messages.get().getNoNearbyPlayers()));
 			return bubbleMessage;
 		}
@@ -68,7 +70,7 @@ public class RecipientSelector {
 		bubbleMessage.setRecipients(recipients);
 		Logger.debug("Recipients before: " + oldRecipients + ", after: " + bubbleMessage.getRecipients().size());
 
-		if (recipients.size() <= 1 && settings.get().getNotify().isNotifyNoPlayers())
+		if (recipients.size() <= minimumRecipients && settings.get().getNotify().isNotifyNoPlayers())
 			sender.sendMessage(Serializer.serialize(sender, messages.get().getNoPlayers()));
 
 		return bubbleMessage;
