@@ -21,7 +21,7 @@ public class ContentArranger {
 	private static final String MESSAGE_PLACEHOLDER = "{message}";
 
 	private static final Set<AnimationType> SINGLE_GROUP_ANIMATIONS = EnumSet.of(
-			AnimationType.POPOUT, AnimationType.EXPANSION
+			AnimationType.POPOUT, AnimationType.EXPANSION, AnimationType.CONTRACTION
 	);
 
 	@Inject

@@ -23,6 +23,14 @@ public class BubblerSettingsTemplate implements DefaultConfig<BubblerSettings> {
 
 		config.setNotify(notify);
 
+		BubblerSettings.Animation animation = getAnimation();
+
+		config.setAnimation(animation);
+
+		return config;
+	}
+
+	private static BubblerSettings.Animation getAnimation() {
 		BubblerSettings.Animation animation = new BubblerSettings.Animation();
 		animation.setPopoutDelay(500);
 
@@ -31,8 +39,11 @@ public class BubblerSettingsTemplate implements DefaultConfig<BubblerSettings> {
 		expansion.setDuration(400);
 		animation.setExpansion(expansion);
 
-		config.setAnimation(animation);
+		BubblerSettings.Animation.Contraction contraction = new BubblerSettings.Animation.Contraction();
+		contraction.setEndScale(0.5F);
+		contraction.setDuration(400);
+		animation.setContraction(contraction);
 
-		return config;
+		return animation;
 	}
 }

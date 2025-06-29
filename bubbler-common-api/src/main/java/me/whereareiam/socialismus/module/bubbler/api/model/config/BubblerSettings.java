@@ -29,6 +29,8 @@ public class BubblerSettings {
 	@ToString
 	public static class Animation {
 		private int popoutDelay;
+		private Expansion expansion;
+		private Contraction contraction;
 
 		@Getter
 		@Setter
@@ -38,6 +40,12 @@ public class BubblerSettings {
 			private int duration;
 		}
 
-		private Expansion expansion;
+		@Getter
+		@Setter
+		@ToString
+		public static class Contraction {
+			private float endScale;
+			private int duration;
+		}
 	}
 }
