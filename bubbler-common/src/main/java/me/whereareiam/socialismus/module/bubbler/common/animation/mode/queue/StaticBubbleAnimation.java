@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.bubbler.common.animation.mode;
+package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue;
 
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;

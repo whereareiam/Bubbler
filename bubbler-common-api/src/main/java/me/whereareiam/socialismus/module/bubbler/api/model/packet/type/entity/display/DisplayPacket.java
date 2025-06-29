@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class DisplayPacket extends EntityPacket {
 	@Builder.Default
 	private final Vector3f translation = new Vector3f(0.0F, 0.0F, 0.0F);

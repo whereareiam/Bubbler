@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class TextDisplayPacket extends DisplayPacket {
 	private final Component text;
 	private final boolean hasShadow;

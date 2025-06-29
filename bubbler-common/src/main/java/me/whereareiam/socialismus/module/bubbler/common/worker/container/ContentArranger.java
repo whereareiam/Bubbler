@@ -12,15 +12,17 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Singleton
 public class ContentArranger {
 	private static final String MESSAGE_PLACEHOLDER = "{message}";
+
+	private static final Set<AnimationType> SINGLE_GROUP_ANIMATIONS = EnumSet.of(
+			AnimationType.POPOUT, AnimationType.EXPANSION
+	);
 
 	@Inject
 	public ContentArranger(WorkerProcessor<BubbleMessage> workerProcessor) {
@@ -32,87 +34,63 @@ public class ContentArranger {
 
 		String content = ComponentUtil.toString(bubbleMessage.getContent());
 		List<String> lines = formatContent(bubbleMessage, content);
-		List<BubbleGroup> groupedLines = createBubbleGroups(bubbleMessage, lines);
 
-		Logger.debug("Putting " + lines.size() + " lines into " + groupedLines.size() + " groups");
-		bubbleMessage.setGroups(new LinkedList<>(groupedLines));
+		Bubble bubble = bubbleMessage.getBubble();
+		List<BubbleGroup> groups;
+
+		if (SINGLE_GROUP_ANIMATIONS.contains(bubble.getStyle().getAnimation())) {
+			groups = createSingleGroup(bubbleMessage, lines);
+		} else {
+			groups = createMultiLineGroups(bubbleMessage, lines);
+		}
+
+		Logger.debug("Putting " + lines.size() + " lines into " + groups.size() + " groups");
+		bubbleMessage.setGroups(new LinkedList<>(groups));
 
 		return bubbleMessage;
 	}
 
-	private List<String> formatContent(BubbleMessage bubbleMessage, String content) {
-		List<String> lines = new ArrayList<>();
-
-		Bubble bubble = bubbleMessage.getBubble();
-		int maxLineWidth = bubble.getDisplay().getMaxLineWidth();
-		String[] words = content.split(" ");
-		String messageFormat = bubble.getFormat().getFormat();
-
-		StringBuilder currentLine = new StringBuilder();
-		for (String word : words) {
-			if (currentLine.length() + word.length() > maxLineWidth) {
-				if (word.length() > maxLineWidth) {
-					while (word.length() > maxLineWidth) {
-						int partLength = maxLineWidth - currentLine.length();
-						if (partLength <= 0) {
-							lines.add(messageFormat.replace(MESSAGE_PLACEHOLDER, currentLine.toString().trim()));
-							currentLine = new StringBuilder();
-							partLength = maxLineWidth;
-						}
-
-						String part = word.substring(0, partLength);
-						word = word.substring(partLength);
-
-						currentLine.append(part).append(bubble.getFormat().getSeparatorFormat());
-						lines.add(messageFormat.replace(MESSAGE_PLACEHOLDER, currentLine.toString().trim()));
-						currentLine = new StringBuilder();
-					}
-				} else {
-					lines.add(messageFormat.replace(MESSAGE_PLACEHOLDER, currentLine.toString().trim()));
-					currentLine = new StringBuilder();
-				}
-			}
-
-			currentLine.append(word).append(" ");
+	private List<BubbleGroup> createSingleGroup(BubbleMessage bubbleMessage, List<String> lines) {
+		List<BubbleLine> bubbleLines = new ArrayList<>(lines.size());
+		for (String text : lines) {
+			bubbleLines.add(BubbleLine.builder()
+					.content(Serializer.serialize(bubbleMessage.getSender(), text))
+					.build());
 		}
-		if (!currentLine.isEmpty())
-			lines.add(messageFormat.replace(MESSAGE_PLACEHOLDER, currentLine.toString().trim()));
 
-		return lines;
+		applyFormats(bubbleMessage, bubbleLines);
+		Collections.reverse(bubbleLines);
+		return List.of(BubbleGroup.builder().lines(bubbleLines).build());
 	}
 
-	private List<BubbleGroup> createBubbleGroups(BubbleMessage bubbleMessage, List<String> lines) {
-		int maxLinesCount = bubbleMessage.getBubble().getDisplay().getMaxLinesCount();
-
+	private List<BubbleGroup> createMultiLineGroups(BubbleMessage bubbleMessage, List<String> lines) {
+		int max = bubbleMessage.getBubble().getDisplay().getMaxLinesCount();
 		List<BubbleGroup> groups = new ArrayList<>();
-		BubbleGroup currentGroup = BubbleGroup.builder().lines(new ArrayList<>()).build();
+		BubbleGroup current = BubbleGroup.builder().lines(new ArrayList<>()).build();
 
 		for (int i = 0; i < lines.size(); i++) {
-			String line = lines.get(i);
-
-			BubbleLine bubbleLine = BubbleLine.builder()
-					.content(Serializer.serialize(bubbleMessage.getSender(), line))
+			String txt = lines.get(i);
+			BubbleLine bl = BubbleLine.builder()
+					.content(Serializer.serialize(bubbleMessage.getSender(), txt))
 					.build();
-			currentGroup.getLines().add(bubbleLine);
+			current.getLines().add(bl);
 
-			if (currentGroup.getLines().size() >= maxLinesCount && i < lines.size() - 1) {
-				applyQueuedFormatToLastLine(bubbleMessage, currentGroup.getLines());
-				applyFormats(bubbleMessage, currentGroup.getLines());
-				Collections.reverse(currentGroup.getLines());
-				groups.add(currentGroup);
-				currentGroup = BubbleGroup.builder().lines(new ArrayList<>()).build();
+			if (current.getLines().size() >= max && i < lines.size() - 1) {
+				applyQueuedFormatToLastLine(bubbleMessage, current.getLines());
+				applyFormats(bubbleMessage, current.getLines());
+				Collections.reverse(current.getLines());
+				groups.add(current);
+				current = BubbleGroup.builder().lines(new ArrayList<>()).build();
 			}
 		}
 
-		if (!currentGroup.getLines().isEmpty()) {
-			applyFormats(bubbleMessage, currentGroup.getLines());
-			Collections.reverse(currentGroup.getLines());
-			groups.add(currentGroup);
+		if (!current.getLines().isEmpty()) {
+			applyFormats(bubbleMessage, current.getLines());
+			Collections.reverse(current.getLines());
+			groups.add(current);
 		}
-
 		return groups;
 	}
-
 
 	private void applyQueuedFormatToLastLine(BubbleMessage bubbleMessage, List<BubbleLine> bubbleLines) {
 		if (bubbleLines.isEmpty()) return;
@@ -134,7 +112,6 @@ public class ContentArranger {
 		bubbleLines.set(lastIndex, updatedLine);
 	}
 
-
 	private void applyFormats(BubbleMessage bubbleMessage, List<BubbleLine> bubbleLines) {
 		if (bubbleLines.isEmpty()) return;
 
@@ -147,38 +124,71 @@ public class ContentArranger {
 	}
 
 	private void applyFormatToLine(
-			String format, List<BubbleLine> bubbleLines, DummyPlayer sender, boolean isInitial) {
+			String format,
+			List<BubbleLine> lines,
+			DummyPlayer sender,
+			boolean isInitial
+	) {
 		if (format.contains("\n")) {
 			String[] parts = format.split("\n");
 			List<BubbleLine> newLines = new ArrayList<>();
-
-			for (String part : parts)
-				newLines.add(BubbleLine.builder().content(Serializer.serialize(sender, part)).build());
-
-			if (isInitial) {
-				newLines.addAll(bubbleLines);
-			} else {
-				newLines.addAll(0, bubbleLines);
+			for (String part : parts) {
+				newLines.add(BubbleLine.builder()
+						.content(Serializer.serialize(sender, part))
+						.build());
 			}
+			if (isInitial) newLines.addAll(lines);
+			else newLines.addAll(0, lines);
 
-			bubbleLines.clear();
-			bubbleLines.addAll(newLines);
+			lines.clear();
+			lines.addAll(newLines);
 		} else {
-			int index = isInitial ? 0 : bubbleLines.size() - 1;
-			BubbleLine line = bubbleLines.get(index);
-			if (isInitial) {
-				line =
-						BubbleLine.builder()
-								.content(Serializer.serialize(sender, format).append(line.getContent()))
-								.build();
-			} else {
-				line =
-						BubbleLine.builder()
-								.content(line.getContent().append(Serializer.serialize(sender, format)))
-								.build();
-			}
-
-			bubbleLines.set(index, line);
+			int idx = isInitial ? 0 : lines.size() - 1;
+			BubbleLine old = lines.get(idx);
+			lines.set(idx,
+					BubbleLine.builder()
+							.content(isInitial
+									? Serializer.serialize(sender, format).append(old.getContent())
+									: old.getContent().append(Serializer.serialize(sender, format)))
+							.build()
+			);
 		}
+	}
+
+	private List<String> formatContent(BubbleMessage bubbleMessage, String content) {
+		List<String> lines = new ArrayList<>();
+		Bubble bubble = bubbleMessage.getBubble();
+		int maxWidth = bubble.getDisplay().getMaxLineWidth();
+		String[] words = content.split(" ");
+		String fmt = bubble.getFormat().getFormat();
+		StringBuilder curr = new StringBuilder();
+
+		for (String w : words) {
+			if (curr.length() + w.length() > maxWidth) {
+				if (w.length() > maxWidth) {
+					while (w.length() > maxWidth) {
+						int partLen = maxWidth - curr.length();
+						if (partLen <= 0) {
+							lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+							curr = new StringBuilder();
+							partLen = maxWidth;
+						}
+						String part = w.substring(0, partLen);
+						w = w.substring(partLen);
+						curr.append(part).append(bubble.getFormat().getSeparatorFormat());
+						lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+						curr = new StringBuilder();
+					}
+				} else {
+					lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+					curr = new StringBuilder();
+				}
+			}
+			curr.append(w).append(" ");
+		}
+		if (!curr.isEmpty()) {
+			lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+		}
+		return lines;
 	}
 }

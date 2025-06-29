@@ -22,7 +22,6 @@ import java.util.function.BiConsumer;
 @Getter
 @Setter
 public class BubbleQueue {
-
 	private final Queue<BubbleMessage> messages = new ConcurrentLinkedQueue<>();
 	private boolean processing;
 

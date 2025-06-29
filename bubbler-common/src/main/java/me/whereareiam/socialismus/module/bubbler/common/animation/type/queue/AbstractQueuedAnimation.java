@@ -87,12 +87,10 @@ public abstract class AbstractQueuedAnimation extends BubbleAnimation {
 			User user = PacketEvents.getAPI()
 					.getPlayerManager()
 					.getUser(player.getAudience());
-			if (user != null) {
-				DestroyEntitiesPacket.builder()
-						.entityIds(ids.stream().mapToInt(Integer::intValue).toArray())
-						.build()
-						.send(user);
-			}
+			DestroyEntitiesPacket.builder()
+					.entityIds(ids.stream().mapToInt(Integer::intValue).toArray())
+					.build()
+					.send(user);
 		});
 	}
 

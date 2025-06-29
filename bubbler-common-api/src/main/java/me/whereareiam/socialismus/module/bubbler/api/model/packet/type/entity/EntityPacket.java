@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.type.Version;
@@ -12,10 +13,12 @@ import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersio
 import java.util.List;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public abstract class EntityPacket implements Packet {
-	protected final int entityId = (int) (Math.random() * Integer.MAX_VALUE);
-	protected final Vector3d position;
+	@Builder.Default
+	protected int entityId = (int) (Math.random() * Integer.MAX_VALUE);
+	@Builder.Default
+	protected final Vector3d position = new Vector3d(0.0F, 0.0F, 0.0F);
 	protected final boolean noGravity;
 
 	protected void addCommonMetadata(List<EntityData<?>> metadata) {

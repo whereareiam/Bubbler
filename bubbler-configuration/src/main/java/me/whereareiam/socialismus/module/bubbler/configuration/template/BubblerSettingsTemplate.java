@@ -25,7 +25,11 @@ public class BubblerSettingsTemplate implements DefaultConfig<BubblerSettings> {
 
 		BubblerSettings.Animation animation = new BubblerSettings.Animation();
 		animation.setPopoutDelay(500);
-		animation.setExpansionDelay(500);
+
+		BubblerSettings.Animation.Expansion expansion = new BubblerSettings.Animation.Expansion();
+		expansion.setStartScale(0.5F);
+		expansion.setDuration(400);
+		animation.setExpansion(expansion);
 
 		config.setAnimation(animation);
 
