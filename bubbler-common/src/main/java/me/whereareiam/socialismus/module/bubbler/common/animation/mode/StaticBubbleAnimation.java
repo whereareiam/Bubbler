@@ -62,14 +62,9 @@ public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 						.runnable(() -> {
 							destroyEntities(map);
 							queue.setProcessing(false);
-							postProcess(sender, queue);
+							nextGroup(sender, queue);
 						})
 						.build()
 		);
-	}
-
-	private void postProcess(DummyPlayer sender, BubbleQueue queue) {
-		queue.getMessages().poll();
-		nextGroup(sender, queue);
 	}
 }

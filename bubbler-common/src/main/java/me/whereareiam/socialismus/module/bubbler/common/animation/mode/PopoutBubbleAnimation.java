@@ -57,7 +57,6 @@ public final class PopoutBubbleAnimation extends AbstractQueuedAnimation {
 
 		if (index >= lines.size()) {
 			queue.setProcessing(false);
-			queue.getMessages().poll();
 			nextGroup(sender, queue);
 			return;
 		}
