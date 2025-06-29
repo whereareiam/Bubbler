@@ -27,13 +27,13 @@ public class DisplayPacket extends EntityPacket {
 	private final Vector3f scale = new Vector3f(1.0F, 1.0F, 1.0F);
 	private final DisplayType type;
 
-	protected void addDisplayMetadata(List<EntityData> metadata) {
+	protected void addDisplayMetadata(List<EntityData<?>> metadata) {
 		super.addCommonMetadata(metadata);
 
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData(11, EntityDataTypes.VECTOR3F, translation));
-			metadata.add(new EntityData(12, EntityDataTypes.VECTOR3F, scale));
-			metadata.add(new EntityData(15, EntityDataTypes.BYTE, type.getValue()));
+			metadata.add(new EntityData<>(11, EntityDataTypes.VECTOR3F, translation));
+			metadata.add(new EntityData<>(12, EntityDataTypes.VECTOR3F, scale));
+			metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, type.getValue()));
 		}
 	}
 

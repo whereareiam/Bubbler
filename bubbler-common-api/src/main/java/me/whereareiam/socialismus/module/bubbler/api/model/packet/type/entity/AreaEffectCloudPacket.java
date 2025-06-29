@@ -38,11 +38,11 @@ public class AreaEffectCloudPacket extends EntityPacket {
 	}
 
 	private WrapperPlayServerEntityMetadata createMetadataPacket() {
-		List<EntityData> metadata = new ArrayList<>();
+		List<EntityData<?>> metadata = new ArrayList<>();
 		addCommonMetadata(metadata);
 
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData(8, EntityDataTypes.FLOAT, radius));
+			metadata.add(new EntityData<>(8, EntityDataTypes.FLOAT, radius));
 		} else {
 			// TODO
 		}

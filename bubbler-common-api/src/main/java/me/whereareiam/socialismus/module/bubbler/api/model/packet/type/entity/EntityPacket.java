@@ -18,11 +18,11 @@ public abstract class EntityPacket implements Packet {
 	protected final Vector3d position;
 	protected final boolean noGravity;
 
-	protected void addCommonMetadata(List<EntityData> metadata) {
+	protected void addCommonMetadata(List<EntityData<?>> metadata) {
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_19_4)) {
-			metadata.add(new EntityData(5, EntityDataTypes.BOOLEAN, noGravity));
+			metadata.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, noGravity));
 		} else {
-			metadata.add(new EntityData(5, EntityDataTypes.BYTE, (byte) (noGravity ? 0x02 : 0)));
+			metadata.add(new EntityData<>(5, EntityDataTypes.BYTE, (byte) (noGravity ? 0x02 : 0)));
 		}
 	}
 }

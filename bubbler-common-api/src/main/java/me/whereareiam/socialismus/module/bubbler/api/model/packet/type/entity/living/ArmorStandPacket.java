@@ -39,14 +39,14 @@ public class ArmorStandPacket extends EntityPacket {
 	}
 
 	private WrapperPlayServerEntityMetadata createMetadataPacket() {
-		List<EntityData> metadata = new ArrayList<>();
+		List<EntityData<?>> metadata = new ArrayList<>();
 		addCommonMetadata(metadata);
 
 		byte status = 0;
 		if (small) status |= 0x01;
 
 		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData(15, EntityDataTypes.BYTE, status));
+			metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, status));
 		} else {
 			// TODO
 		}
