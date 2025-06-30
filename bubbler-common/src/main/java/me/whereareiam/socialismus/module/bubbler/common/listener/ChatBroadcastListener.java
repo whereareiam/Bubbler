@@ -17,6 +17,8 @@ public class ChatBroadcastListener implements EventListener {
 
 	@SocialisticEvent(EventOrder.NORMAL)
 	public void onChatBroadcast(ChatBroadcastEvent event) {
+		if (event.getChatMessage().getOrigin() != null) return;
+
 		coordinationService.coordinate(BubbleMessage.builder()
 				.sender(event.getChatMessage().getSender())
 				.recipients(event.getChatMessage().getRecipients())

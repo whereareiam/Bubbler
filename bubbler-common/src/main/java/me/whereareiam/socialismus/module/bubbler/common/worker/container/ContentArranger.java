@@ -32,7 +32,7 @@ public class ContentArranger {
 	public BubbleMessage arrangeContent(BubbleMessage bubbleMessage) {
 		Logger.debug("Arranging content for " + bubbleMessage.getSender().getUsername());
 
-		String content = ComponentUtil.toString(bubbleMessage.getContent());
+		String content = ComponentUtil.toLegacy(bubbleMessage.getContent());
 		List<String> lines = formatContent(bubbleMessage, content);
 
 		Bubble bubble = bubbleMessage.getBubble();
