@@ -51,5 +51,11 @@
       "type": "INTEGRATION"
     }
   ],
+  "updater": {
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/Bubbler"
+    }
+  },
   "main": "me.whereareiam.socialismus.module.bubbler.Bubbler"
 }
