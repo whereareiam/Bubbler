@@ -29,7 +29,7 @@ jobs:
         id: project_details
         run: |
           echo "NAME=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_ENV
-          echo "VERSION=${GITHUB_REF##*/}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Build project
         run: ./gradlew build shadowJar
