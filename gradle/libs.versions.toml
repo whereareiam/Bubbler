@@ -3,7 +3,7 @@
 # plugins
 shadow = "8.3.8"
 
-socialismus = "dev-SNAPSHOT"
+socialismus = "2.0.0-RC4"
 
 # compile time processing
 lombok = "1.18.38"
