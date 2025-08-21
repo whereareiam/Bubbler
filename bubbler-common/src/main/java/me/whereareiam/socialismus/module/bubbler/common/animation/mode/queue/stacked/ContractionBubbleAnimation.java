@@ -58,7 +58,7 @@ public final class ContractionBubbleAnimation extends StackedBubbleAnimation {
 		});
 
 		schedule(durationMs + tickMs(), () -> {
-			destroyEntities(Map.of(sender, List.of(id)));
+			recipients.forEach(r -> destroyEntities(Map.of(r, List.of(id))));
 			after.run();
 		});
 	}

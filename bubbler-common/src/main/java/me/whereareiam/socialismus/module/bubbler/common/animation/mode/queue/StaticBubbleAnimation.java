@@ -52,15 +52,13 @@ public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 			recipients.forEach(r -> passenger.send(user(r)));
 		}
 
-		Map<DummyPlayer, List<Integer>> map = Map.of(sender, entityIds);
-
 		long delayMs = group.calculateDisplayTime() * 1_000L;
 		scheduler.schedule(
 				DelayedRunnableTask.builder()
 						.module("bubbler")
 						.delay(delayMs)
 						.runnable(() -> {
-							destroyEntities(map);
+							recipients.forEach(r -> destroyEntities(Map.of(r, entityIds)));
 							queue.setProcessing(false);
 							nextGroup(sender, queue);
 						})

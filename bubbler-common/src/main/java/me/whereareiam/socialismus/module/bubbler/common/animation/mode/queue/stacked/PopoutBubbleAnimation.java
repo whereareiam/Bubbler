@@ -32,7 +32,7 @@ public final class PopoutBubbleAnimation extends StackedBubbleAnimation {
 
 	@Override
 	protected void removalAnimation(DummyPlayer sender, int id, Bubble b, Collection<DummyPlayer> recipients, Runnable after) {
-		recipients.forEach(r -> destroyEntities(Map.of(sender, List.of(id))));
+		recipients.forEach(r -> destroyEntities(Map.of(r, List.of(id))));
 		after.run();
 	}
 
