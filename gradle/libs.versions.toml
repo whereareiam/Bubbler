@@ -11,7 +11,7 @@ lombok = "1.18.38"
 # general
 guice = "7.0.0"
 adventure = "4.23.0"
-jackson = "2.19.1"
+jackson = "2.20.1"
 packetevents = "2.10.0"
 
 # cloud
