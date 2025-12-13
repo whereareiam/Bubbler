@@ -6,18 +6,17 @@ plugins {
 }
 
 dependencies {
-    "implementation"(project(":bubbler-configuration"))
-    "implementation"(project(":bubbler-common-api"))
-    "implementation"(project(":bubbler-command"))
-    "implementation"(project(":bubbler-common"))
+    rootProject.subprojects.forEach { subproject ->
+        val path = subproject.path
+        if (path != ":bubbler-bootstrap" && path.startsWith(":bubbler-")) {
+            "implementation"(project(path))
+        }
+    }
 }
 
 tasks.withType<ShadowJar> {
     archiveBaseName.set(rootProject.name)
     archiveClassifier.set("")
-
-    relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
-    relocate("com.fasterxml.jackson", "me.whereareiam.socialismus.library.jackson")
 
     val defaultDestination = rootProject.layout.buildDirectory.dir("libs")
 

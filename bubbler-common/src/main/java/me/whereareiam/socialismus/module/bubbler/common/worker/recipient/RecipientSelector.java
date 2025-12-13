@@ -3,20 +3,19 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.recipient;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.type.chat.Participants;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.type.chat.Participants;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -24,20 +23,17 @@ public class RecipientSelector {
 	private final RequirementEvaluatorService requirementEvaluator;
 	private final Provider<BubblerSettings> settings;
 	private final Provider<BubblerMessages> messages;
-	private final PlatformInteractor interactor;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<BubbleMessage> workerProcessor,
 			RequirementEvaluatorService requirementEvaluator,
 			Provider<BubblerSettings> settings,
-			Provider<BubblerMessages> messages,
-			PlatformInteractor interactor
+			Provider<BubblerMessages> messages
 	) {
 		this.requirementEvaluator = requirementEvaluator;
 		this.settings = settings;
 		this.messages = messages;
-		this.interactor = interactor;
 
 		workerProcessor.addWorker(new Worker<>(this::selectRecipients, 100, true, false));
 	}
@@ -51,10 +47,10 @@ public class RecipientSelector {
 		int minimumRecipients = settings.get().getMinRecipients();
 
 		Bubble bubble = bubbleMessage.getBubble();
-		DummyPlayer sender = bubbleMessage.getSender();
+		SocialismusPlayer sender = bubbleMessage.getSender();
 
 		int oldRecipients = bubbleMessage.getRecipients().size();
-		Set<DummyPlayer> recipients = bubbleMessage.getRecipients();
+		Collection<SocialismusPlayer> recipients = bubbleMessage.getRecipients();
 
 		recipients = recipients.parallelStream()
 				.filter(recipient -> isWithinRadius(sender, recipient, bubble.getDisplay().getRadius()))
@@ -76,7 +72,7 @@ public class RecipientSelector {
 		return bubbleMessage;
 	}
 
-	private boolean isWithinRadius(DummyPlayer sender, DummyPlayer recipient, double radius) {
-		return interactor.areWithinRange(sender.getUniqueId(), recipient.getUniqueId(), radius);
+	private boolean isWithinRadius(SocialismusPlayer sender, SocialismusPlayer recipient, double radius) {
+		return sender.isWithinRange(recipient, radius);
 	}
 }

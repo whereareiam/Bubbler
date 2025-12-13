@@ -4,12 +4,12 @@ import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.InterpolationMetadataPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.ScaleMetadataPacket;
+import me.whereareiam.socialismus.service.Scheduler;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,11 +32,11 @@ public final class ContractionBubbleAnimation extends StackedBubbleAnimation {
 	}
 
 	@Override
-	protected void spawnAnimation(int id, Bubble b, Collection<DummyPlayer> rec) {
+	protected void spawnAnimation(int id, Bubble b, Collection<SocialismusPlayer> rec) {
 	}
 
 	@Override
-	protected void removalAnimation(DummyPlayer sender, int id, Bubble b, Collection<DummyPlayer> recipients, Runnable after) {
+	protected void removalAnimation(SocialismusPlayer sender, int id, Bubble b, Collection<SocialismusPlayer> recipients, Runnable after) {
 		long durationMs = settings.get().getAnimation().getContraction().getDuration();
 		int ticks = Math.max(1, (int) Math.ceil(durationMs / (double) tickMs()));
 		float end = settings.get().getAnimation().getContraction().getEndScale();

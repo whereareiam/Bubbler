@@ -1,3 +1,7 @@
 dependencies {
-    "compileOnly"(project(":bubbler-common-api"))
+    "compileOnly"(project(":bubbler-api"))
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

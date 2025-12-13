@@ -1,10 +1,9 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.position.Position;
-import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.position.Position;
+import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
@@ -12,11 +11,9 @@ import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.Passenger
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.AbstractQueuedAnimation;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.BubbleQueue;
+import me.whereareiam.socialismus.service.Scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 	@Inject
@@ -26,13 +23,13 @@ public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 
 	@Override
 	protected void playGroup(
-			DummyPlayer sender,
+			SocialismusPlayer sender,
 			BubbleMessage msg,
 			BubbleGroup group,
 			BubbleQueue queue
 	) {
 		Bubble bubble = msg.getBubble();
-		Set<DummyPlayer> recipients = msg.getRecipients();
+		Collection<SocialismusPlayer> recipients = msg.getRecipients();
 		float headGap = bubble.getDisplay().getHeadLineGap();
 		float spacing = bubble.getDisplay().getLineSpacing();
 

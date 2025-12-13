@@ -1,42 +1,45 @@
 [versions]
 
 # plugins
-shadow = "9.2.2"
+shadow = "9.3.0"
 
-socialismus = "dev-SNAPSHOT"
+socialismus = "2.0.0-RC5"
 
 # compile time processing
-lombok = "1.18.38"
+lombok = "1.18.42"
 
 # general
-guice = "7.0.0"
-adventure = "4.23.0"
-jackson = "2.19.1"
-packetevents = "2.10.0"
+adventure = "4.25.0"
+packetevents = "2.11.0"
+cloud = "2.0.0"
 
-# cloud
-cloud-core = "2.0.0"
+# testing
+junit = "6.0.1"
+mockito = "5.20.0"
 
 [libraries]
 
-socialismus = { group = "com.github.whereareiam", name = "Socialismus", version.ref = "socialismus" }
+socialismus = { group = "me.whereareiam", name = "Socialismus", version.ref = "socialismus" }
 
 # compile time processing
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 
 # general
-guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
-jackson = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
 packetevents = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetevents" }
 
 # cloud
-cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud-core" }
-cloud-annotations = { group = "org.incendo", name = "cloud-annotations", version.ref = "cloud-core" }
+cloud-annotations = { group = "org.incendo", name = "cloud-annotations", version.ref = "cloud" }
+
+# testing
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-junit = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
 
 [bundles]
 
-cloud = ["cloud-core", "cloud-annotations"]
+testing = ["junit-jupiter", "mockito-core", "mockito-junit"]
 
 [plugins]
 

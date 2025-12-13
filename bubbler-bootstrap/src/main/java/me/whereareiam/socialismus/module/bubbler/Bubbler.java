@@ -4,31 +4,26 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Reloadable;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.registry.Registry;
-import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.api.model.CommandEntity;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.Scheduler;
-import me.whereareiam.socialismus.api.output.command.CommandService;
-import me.whereareiam.socialismus.api.output.config.ConfigurationLoader;
-import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
-import me.whereareiam.socialismus.api.output.module.SocialisticModule;
+import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
+import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
-import me.whereareiam.socialismus.module.bubbler.configuration.ConfigBinder;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.registry.base.Registry;
+import me.whereareiam.socialismus.service.CommandService;
+import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.service.Scheduler;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class Bubbler extends SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
-	private final Registry<Map<String, CommandEntity>> commandRegistry;
 	private Injector injector;
 
 	@Override
@@ -39,13 +34,10 @@ public class Bubbler extends SocialisticModule {
 								parentInjector.getInstance(Scheduler.class),
 								parentInjector.getInstance(PlatformInteractor.class),
 								reloadableRegistry,
-								commandRegistry,
 								parentInjector.getInstance(RequirementEvaluatorService.class),
-								parentInjector.getInstance(ConfigurationManager.class),
-								parentInjector.getInstance(ConfigurationLoader.class),
 								parentInjector.getInstance(CommandService.class),
-								parentInjector.getInstance(PlayerContainerService.class)),
-						new ConfigBinder(workingPath));
+								parentInjector.getInstance(PlayerRegistry.class)),
+						new CommonConfiguration(workingPath));
 
 		ProtocolVersion.VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 

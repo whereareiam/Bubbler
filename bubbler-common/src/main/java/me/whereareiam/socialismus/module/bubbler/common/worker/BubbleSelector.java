@@ -3,16 +3,16 @@ package me.whereareiam.socialismus.module.bubbler.common.worker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.type.chat.Participants;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.List;
 

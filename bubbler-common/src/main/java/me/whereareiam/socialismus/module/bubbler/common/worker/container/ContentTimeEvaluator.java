@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.util.ComponentUtil;
 
 @Singleton
 public class ContentTimeEvaluator {

@@ -2,17 +2,17 @@ package me.whereareiam.socialismus.module.bubbler.common.worker.container;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.util.ComponentUtil;
 
 import java.util.*;
 
@@ -126,7 +126,7 @@ public class ContentArranger {
 	private void applyFormatToLine(
 			String format,
 			List<BubbleLine> lines,
-			DummyPlayer sender,
+			SocialismusPlayer sender,
 			boolean isInitial
 	) {
 		if (format.contains("\n")) {

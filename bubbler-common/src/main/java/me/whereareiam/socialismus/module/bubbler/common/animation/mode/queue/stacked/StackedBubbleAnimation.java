@@ -3,9 +3,8 @@ package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue.st
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Provider;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
@@ -17,6 +16,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.di
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.TranslationMetadataPacket;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.AbstractQueuedAnimation;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.BubbleQueue;
+import me.whereareiam.socialismus.service.Scheduler;
 
 import java.util.*;
 
@@ -32,29 +32,29 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 
 	protected abstract Vector3f initialScale(Bubble bubble);
 
-	protected abstract void spawnAnimation(int entityId, Bubble bubble, Collection<DummyPlayer> recipients);
+	protected abstract void spawnAnimation(int entityId, Bubble bubble, Collection<SocialismusPlayer> recipients);
 
-	protected abstract void removalAnimation(DummyPlayer sender,
+	protected abstract void removalAnimation(SocialismusPlayer sender,
 	                                         int entityId,
 	                                         Bubble bubble,
-	                                         Collection<DummyPlayer> recipients,
+	                                         Collection<SocialismusPlayer> recipients,
 	                                         Runnable after);
 
 	protected abstract long extraSpawnDelayMs(Bubble bubble);
 
 	@Override
-	protected final void playGroup(DummyPlayer sender, BubbleMessage msg, BubbleGroup group, BubbleQueue queue) {
+	protected final void playGroup(SocialismusPlayer sender, BubbleMessage msg, BubbleGroup group, BubbleQueue queue) {
 		List<BubbleLine> lines = new ArrayList<>(group.getLines());
 		Collections.reverse(lines);
 		step(sender, msg, lines, 0, new HashMap<>(), queue);
 	}
 
 	private void step(
-			DummyPlayer sender,
+			SocialismusPlayer sender,
 			BubbleMessage msg,
 			List<BubbleLine> lines,
 			int index,
-			Map<DummyPlayer, List<Integer>> entities,
+			Map<SocialismusPlayer, List<Integer>> entities,
 			BubbleQueue queue
 	) {
 		Bubble bubble = msg.getBubble();
@@ -113,7 +113,7 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 				step(sender, msg, lines, index + 1, entities, queue));
 	}
 
-	private void updateTranslations(List<Integer> ids, float headGap, float spacing, Collection<DummyPlayer> rec) {
+	private void updateTranslations(List<Integer> ids, float headGap, float spacing, Collection<SocialismusPlayer> rec) {
 		for (int i = ids.size() - 1, level = 0; i >= 0; i--, level++) {
 			Vector3f t = new Vector3f(0F, headGap + level * spacing, 0F);
 			int id = ids.get(i);
@@ -125,7 +125,7 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 		}
 	}
 
-	private void resendPassengers(DummyPlayer sender, List<Integer> ids, Collection<DummyPlayer> rec) {
+	private void resendPassengers(SocialismusPlayer sender, List<Integer> ids, Collection<SocialismusPlayer> rec) {
 		int[] arr = ids.stream().mapToInt(Integer::intValue).toArray();
 		PassengerPacket p = passengerPacket(user(sender), arr);
 		rec.forEach(r -> p.send(user(r)));

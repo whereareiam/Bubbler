@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.module.bubbler.common.processor;
 
 import com.google.inject.Singleton;
 import lombok.Getter;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.model.Worker;
+import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 
 import java.util.Comparator;
 import java.util.LinkedList;
