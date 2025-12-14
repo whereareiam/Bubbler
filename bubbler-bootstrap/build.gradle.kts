@@ -18,6 +18,8 @@ tasks.withType<ShadowJar> {
     archiveBaseName.set(rootProject.name)
     archiveClassifier.set("")
 
+    relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
+
     val defaultDestination = rootProject.layout.buildDirectory.dir("libs")
 
     val customOutputDir = if (project.hasProperty("output")) {
