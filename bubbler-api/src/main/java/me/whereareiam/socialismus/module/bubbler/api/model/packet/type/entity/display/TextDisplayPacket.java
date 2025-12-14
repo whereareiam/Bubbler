@@ -8,13 +8,14 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,18 +49,49 @@ public class TextDisplayPacket extends DisplayPacket {
 		List<EntityData<?>> metadata = new ArrayList<>();
 		addDisplayMetadata(metadata);
 
-		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData<>(23, EntityDataTypes.ADV_COMPONENT, text));
-			metadata.add(new EntityData<>(25, EntityDataTypes.INT, backgroundColor));
-			metadata.add(new EntityData<>(26, EntityDataTypes.BYTE, (byte) (255 - (transparency * 255) / 100)));
+		Map<Version, Integer> textIndex = Map.of(
+				Version.V_1_20_2, 23,
+				Version.V_1_19_4, 22
+		);
+		Map<Version, Integer> backgroundColorIndex = Map.of(
+				Version.V_1_20_2, 25,
+				Version.V_1_19_4, 24
+		);
+		Map<Version, Integer> transparencyIndex = Map.of(
+				Version.V_1_20_2, 26,
+				Version.V_1_19_4, 25
+		);
+		Map<Version, Integer> flagsIndex = Map.of(
+				Version.V_1_20_2, 27,
+				Version.V_1_19_4, 26
+		);
 
-			byte flags = 0;
-			if (hasShadow) flags |= 0x01;
-			if (isSeeThrough) flags |= 0x02;
-			if (alignment != null) flags |= alignment.getValue();
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(textIndex),
+				EntityDataTypes.ADV_COMPONENT,
+				text
+		));
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(backgroundColorIndex),
+				EntityDataTypes.INT,
+				backgroundColor
+		));
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(transparencyIndex),
+				EntityDataTypes.BYTE,
+				(byte) (255 - (transparency * 255) / 100)
+		));
 
-			metadata.add(new EntityData<>(27, EntityDataTypes.BYTE, flags));
-		}
+		byte flags = 0;
+		if (hasShadow) flags |= 0x01;
+		if (isSeeThrough) flags |= 0x02;
+		if (alignment != null) flags |= alignment.getValue();
+
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(flagsIndex),
+				EntityDataTypes.BYTE,
+				flags
+		));
 
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
 	}

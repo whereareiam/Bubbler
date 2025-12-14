@@ -8,11 +8,12 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,11 +42,12 @@ public class AreaEffectCloudPacket extends EntityPacket {
 		List<EntityData<?>> metadata = new ArrayList<>();
 		addCommonMetadata(metadata);
 
-		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData<>(8, EntityDataTypes.FLOAT, radius));
-		} else {
-			// TODO
-		}
+		Map<Version, Integer> radiusIndex = Map.of(
+				Version.V_1_21_4, 8
+		);
+
+		Integer index = VersionResolver.resolve(radiusIndex, null);
+		if (index != null) metadata.add(new EntityData<>(index, EntityDataTypes.FLOAT, radius));
 
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
 	}

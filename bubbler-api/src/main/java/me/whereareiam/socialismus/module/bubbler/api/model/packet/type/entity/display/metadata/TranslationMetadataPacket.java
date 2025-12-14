@@ -7,8 +7,11 @@ import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
+import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
+import java.util.Map;
 
 @SuperBuilder
 public final class TranslationMetadataPacket implements Packet {
@@ -21,8 +24,16 @@ public final class TranslationMetadataPacket implements Packet {
 	}
 
 	private List<EntityData<?>> createMetadata() {
+		Map<Version, Integer> translationIndex = Map.of(
+				Version.V_1_20_2, 11,
+				Version.V_1_19_4, 11
+		);
+
+		Integer index = VersionResolver.resolve(translationIndex, null);
+		if (index == null) return List.of();
+
 		return List.of(
-				new EntityData<>(11, EntityDataTypes.VECTOR3F, translation)
+				new EntityData<>(index, EntityDataTypes.VECTOR3F, translation)
 		);
 	}
 }

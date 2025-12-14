@@ -8,8 +8,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
+import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @SuperBuilder
@@ -23,8 +26,16 @@ public class ScaleMetadataPacket implements Packet {
 	}
 
 	private List<EntityData<?>> createMetadata() {
+		Map<Version, Integer> scaleIndex = Map.of(
+				Version.V_1_20_2, 12,
+				Version.V_1_19_4, 11
+		);
+
+		Integer index = VersionResolver.resolve(scaleIndex, null);
+		if (index == null) return List.of();
+
 		return List.of(
-				new EntityData<>(12, EntityDataTypes.VECTOR3F, scale)
+				new EntityData<>(index, EntityDataTypes.VECTOR3F, scale)
 		);
 	}
 }

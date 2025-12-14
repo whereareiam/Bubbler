@@ -7,8 +7,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
+import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @SuperBuilder
@@ -24,10 +27,34 @@ public class InterpolationMetadataPacket implements Packet {
 	}
 
 	private List<EntityData<?>> createMetadata() {
+		Map<Version, Integer> startDelayIndex = Map.of(
+				Version.V_1_20_2, 8,
+				Version.V_1_19_4, 7
+		);
+		Map<Version, Integer> transformDurationIndex = Map.of(
+				Version.V_1_20_2, 9,
+				Version.V_1_19_4, 8
+		);
+		Map<Version, Integer> positionRotationDurationIndex = Map.of(
+				Version.V_1_20_2, 10,
+				Version.V_1_19_4, 9
+		);
+
+		Integer startDelayIdx = VersionResolver.resolve(startDelayIndex, null);
+		if (startDelayIdx == null) return List.of();
+
 		return List.of(
-				new EntityData<>(8, EntityDataTypes.INT, startDelayTicks),
-				new EntityData<>(9, EntityDataTypes.INT, transformDurationTicks),
-				new EntityData<>(10, EntityDataTypes.INT, positionRotationDurationTicks)
+				new EntityData<>(startDelayIdx, EntityDataTypes.INT, startDelayTicks),
+				new EntityData<>(
+						VersionResolver.resolveOrThrow(transformDurationIndex),
+						EntityDataTypes.INT,
+						transformDurationTicks
+				),
+				new EntityData<>(
+						VersionResolver.resolveOrThrow(positionRotationDurationIndex),
+						EntityDataTypes.INT,
+						positionRotationDurationTicks
+				)
 		);
 	}
 }

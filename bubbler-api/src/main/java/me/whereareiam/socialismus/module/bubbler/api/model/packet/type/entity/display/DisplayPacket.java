@@ -9,12 +9,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSp
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
 import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,11 +31,34 @@ public class DisplayPacket extends EntityPacket {
 	protected void addDisplayMetadata(List<EntityData<?>> metadata) {
 		super.addCommonMetadata(metadata);
 
-		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData<>(11, EntityDataTypes.VECTOR3F, translation));
-			metadata.add(new EntityData<>(12, EntityDataTypes.VECTOR3F, scale));
-			metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, type.getValue()));
-		}
+		Map<Version, Integer> translationIndex = Map.of(
+				Version.V_1_20_2, 11,
+				Version.V_1_19_4, 10
+		);
+		Map<Version, Integer> scaleIndex = Map.of(
+				Version.V_1_20_2, 12,
+				Version.V_1_19_4, 11
+		);
+		Map<Version, Integer> typeIndex = Map.of(
+				Version.V_1_20_2, 15,
+				Version.V_1_19_4, 14
+		);
+
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(translationIndex),
+				EntityDataTypes.VECTOR3F,
+				translation
+		));
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(scaleIndex),
+				EntityDataTypes.VECTOR3F,
+				scale
+		));
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(typeIndex),
+				EntityDataTypes.BYTE,
+				type.getValue()
+		));
 	}
 
 	@Override

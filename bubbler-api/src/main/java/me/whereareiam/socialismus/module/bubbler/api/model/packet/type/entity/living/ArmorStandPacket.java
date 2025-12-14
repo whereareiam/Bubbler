@@ -8,12 +8,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
+import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,11 +46,12 @@ public class ArmorStandPacket extends EntityPacket {
 		byte status = 0;
 		if (small) status |= 0x01;
 
-		if (ProtocolVersion.VERSION.isAtLeast(Version.V_1_21_4)) {
-			metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, status));
-		} else {
-			// TODO
-		}
+		Map<Version, Integer> statusIndex = Map.of(
+				Version.V_1_21_4, 15
+		);
+
+		Integer index = VersionResolver.resolve(statusIndex, null);
+		if (index != null) metadata.add(new EntityData<>(index, EntityDataTypes.BYTE, status));
 
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
 	}
