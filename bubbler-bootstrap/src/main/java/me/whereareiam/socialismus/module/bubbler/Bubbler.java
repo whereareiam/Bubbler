@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
@@ -33,6 +34,7 @@ public class Bubbler extends SocialisticModule {
 						new BubblerInjectorConfiguration(
 								parentInjector.getInstance(Scheduler.class),
 								parentInjector.getInstance(PlatformInteractor.class),
+								parentInjector.getInstance(ConfigurationTypeResolver.class),
 								reloadableRegistry,
 								parentInjector.getInstance(RequirementEvaluatorService.class),
 								parentInjector.getInstance(CommandService.class),
