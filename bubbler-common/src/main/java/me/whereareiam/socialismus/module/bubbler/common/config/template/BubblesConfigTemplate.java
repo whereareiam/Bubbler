@@ -71,14 +71,9 @@ public class BubblesConfigTemplate implements TemplateProvider<BubblesConfig> {
 								.operator(RequirementOperatorType.OR)
 								.groups(Map.of(
 										RequirementType.CHAT, ChatRequirement.builder()
-												.condition(RequirementConditionType.HAS)
+												.condition(RequirementConditionType.CONTAINS)
 												.expected("true")
 												.chatIdentifiers(List.of("null", "fallback", "local"))
-												.build(),
-										RequirementType.PLACEHOLDER, PlaceholderRequirement.builder()
-												.condition(RequirementConditionType.EQUALS)
-												.expected("CREATIVE|ADVENTURE")
-												.placeholders(List.of("%player_gamemode%"))
 												.build()
 								)).build()
 				)).build();
