@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.module.bubbler.api;
 
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public final class VersionResolver {
 	 */
 	public static <T> T resolve(Map<Version, T> versionMap, T defaultValue) {
 		// Find the highest version <= current version that has a mapping
-		Version bestVersion = ProtocolVersion.VERSION;
+		Version bestVersion = Constants.SERVER_VERSION;
 		while (bestVersion != null && !versionMap.containsKey(bestVersion)) {
 			if (bestVersion.ordinal() == 0) return defaultValue;
 
@@ -38,7 +38,7 @@ public final class VersionResolver {
 		T value = resolve(versionMap, null);
 		if (value == null) {
 			throw new IllegalStateException(
-					"No mapping found for version " + ProtocolVersion.VERSION
+					"No mapping found for version " + Constants.SERVER_VERSION
 			);
 		}
 

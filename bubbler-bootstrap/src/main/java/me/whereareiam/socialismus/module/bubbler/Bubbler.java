@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.ProtocolVersion;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
@@ -40,8 +39,6 @@ public class Bubbler extends SocialisticModule {
 								parentInjector.getInstance(CommandService.class),
 								parentInjector.getInstance(PlayerRegistry.class)),
 						new CommonConfiguration(workingPath));
-
-		ProtocolVersion.VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 
 		EventManager eventManager = parentInjector.getInstance(EventManager.class);
 		Stream.of(injector.getInstance(ChatBroadcastListener.class)).forEach(eventManager::register);
