@@ -15,7 +15,7 @@ cloud = "2.0.0"
 
 # testing
 junit = "6.0.1"
-mockito = "5.20.0"
+mockito = "5.21.0"
 
 [libraries]
 
