@@ -9,7 +9,7 @@ socialismus = "2.0.0-RC5"
 lombok = "1.18.42"
 
 # general
-adventure = "4.25.0"
+adventure = "4.26.1"
 packetevents = "2.11.0"
 cloud = "2.0.0"
 
