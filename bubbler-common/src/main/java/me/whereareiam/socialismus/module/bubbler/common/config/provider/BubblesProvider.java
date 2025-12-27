@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.module.bubbler.common.config.provider;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.configura.Config;
@@ -9,6 +8,7 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
+import me.whereareiam.socialismus.module.bubbler.common.config.BubblerConfigProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.dynamic.BubblesConfig;
 import me.whereareiam.socialismus.module.bubbler.common.config.template.BubblesConfigTemplate;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -23,41 +23,25 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Singleton
-public class BubblesProvider implements Provider<List<Bubble>>, Reloadable {
+public class BubblesProvider extends BubblerConfigProvider<List<Bubble>> {
 	private final Path bubblesPath;
 	private final ConfigurationType configurationType;
-
-	private List<Bubble> bubbles;
 
 	@Inject
 	public BubblesProvider(
 			@Named("bubblesPath") Path bubblesPath,
+			@Named("workingPath") Path workingPath,
 			ConfigurationTypeResolver typeResolver,
 			Registry<Reloadable> registry
 	) {
+		super(workingPath, registry);
 		this.bubblesPath = bubblesPath;
 		this.configurationType = typeResolver.getConfigurationType();
-
-		Config.registerTemplate(BubblesConfigTemplate.class);
-		registry.register(this);
 	}
 
 	@Override
-	public List<Bubble> get() {
-		if (bubbles != null) return bubbles;
-
-		loadBubbles();
-
-		return bubbles;
-	}
-
-	@Override
-	public void reload() {
-		loadBubbles();
-	}
-
-	private void loadBubbles() {
-		bubbles = new ArrayList<>();
+	protected List<Bubble> load() {
+		List<Bubble> bubbles = new ArrayList<>();
 		try (Stream<Path> paths = Files.list(bubblesPath)) {
 			paths.filter(Files::isRegularFile)
 					.filter(path -> path.getFileName().toString().endsWith(configurationType.getExtension()))
@@ -72,8 +56,7 @@ public class BubblesProvider implements Provider<List<Bubble>>, Reloadable {
 					});
 		} catch (IOException e) {
 			Logger.severe("Failed to load bubble configurations: " + e.getMessage());
-			bubbles = Collections.emptyList();
-			return;
+			return Collections.emptyList();
 		}
 
 		if (bubbles.isEmpty())
@@ -82,6 +65,12 @@ public class BubblesProvider implements Provider<List<Bubble>>, Reloadable {
 		// Remove duplicates by ID
 		bubbles.removeIf(bubble -> bubbles.stream()
 				.anyMatch(c -> c != bubble && c.getId().equals(bubble.getId())));
+		return bubbles;
+	}
+
+	@Override
+	protected void registerTemplate() {
+		Config.registerTemplate(BubblesConfigTemplate.class);
 	}
 
 	private List<Bubble> addBubblesFromConfig(Path path) {
