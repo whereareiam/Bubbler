@@ -13,6 +13,10 @@ import me.whereareiam.socialismus.type.Version;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Metadata packet for updating a display entity's translation offset.
+ * Used for animations that move the display relative to its position.
+ */
 @SuperBuilder
 public final class TranslationMetadataPacket implements Packet {
 	private final int entityId;

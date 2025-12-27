@@ -9,7 +9,6 @@ import me.whereareiam.socialismus.module.bubbler.api.type.BubbleType;
 public class BubblerSettingsTemplate implements TemplateProvider<BubblerSettings> {
 	@Override
 	public BubblerSettings supply(BubblerSettings config) {
-		// Default values
 		config.setBubbleType(BubbleType.TEXT_DISPLAY);
 		config.setMinRecipients(1);
 		config.setMaxQueueSize(30);

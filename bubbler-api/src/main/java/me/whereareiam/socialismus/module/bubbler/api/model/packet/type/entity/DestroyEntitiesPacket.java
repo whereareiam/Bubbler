@@ -5,6 +5,10 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDe
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
 
+/**
+ * Packet for removing entities from the client.
+ * Used to clean up bubble display entities when they expire or are cancelled.
+ */
 @SuperBuilder
 public class DestroyEntitiesPacket implements Packet {
 	private final int[] entityIds;

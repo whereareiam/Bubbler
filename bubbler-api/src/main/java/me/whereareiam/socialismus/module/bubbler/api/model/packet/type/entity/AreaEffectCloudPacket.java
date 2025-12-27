@@ -17,10 +17,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Packet for spawning an area effect cloud entity.
+ * Used as an invisible carrier entity for mounting bubble displays
+ * on older Minecraft versions.
+ */
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class AreaEffectCloudPacket extends EntityPacket {
 	private final float radius;
+
+	/** Version-specific metadata index for the radius field */
+	private static final Map<Version, Integer> RADIUS_INDEX = Map.of(
+			Version.V_1_16, 8
+	);
 
 	@Override
 	public void send(User user) {
@@ -42,12 +52,11 @@ public class AreaEffectCloudPacket extends EntityPacket {
 		List<EntityData<?>> metadata = new ArrayList<>();
 		addCommonMetadata(metadata);
 
-		Map<Version, Integer> radiusIndex = Map.of(
-				Version.V_1_21_4, 8
-		);
-
-		Integer index = VersionResolver.resolve(radiusIndex, null);
-		if (index != null) metadata.add(new EntityData<>(index, EntityDataTypes.FLOAT, radius));
+		metadata.add(new EntityData<>(
+				VersionResolver.resolveOrThrow(RADIUS_INDEX),
+				EntityDataTypes.FLOAT,
+				radius
+		));
 
 		return new WrapperPlayServerEntityMetadata(entityId, metadata);
 	}

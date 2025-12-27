@@ -14,6 +14,11 @@ import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.Map;
 
+/**
+ * Represents a chat bubble configuration with display settings, formatting, and styling.
+ * Bubbles are rendered above players when they send messages and can be customized
+ * through various properties like animations, text styles, and transition effects.
+ */
 @Getter
 @ToString
 @NoArgsConstructor
@@ -29,6 +34,9 @@ public class Bubble {
 	private Map<TransitionType, BubbleTransition> transitions;
 	private Map<Participants, RequirementGroup> requirements;
 
+	/**
+	 * Display configuration controlling visibility and timing of bubbles.
+	 */
 	@Getter
 	@ToString
 	@NoArgsConstructor
@@ -45,6 +53,9 @@ public class Bubble {
 		private double minimumTime;
 	}
 
+	/**
+	 * Format configuration for bubble text content.
+	 */
 	@Getter
 	@ToString
 	@NoArgsConstructor
@@ -57,6 +68,9 @@ public class Bubble {
 		private String separatorFormat;
 	}
 
+	/**
+	 * Visual styling configuration for bubble appearance.
+	 */
 	@Getter
 	@ToString
 	@NoArgsConstructor
@@ -70,6 +84,9 @@ public class Bubble {
 		private BackgroundStyle background;
 		private TextStyle text;
 
+		/**
+		 * Background styling for the bubble.
+		 */
 		@Getter
 		@ToString
 		@NoArgsConstructor
@@ -78,6 +95,11 @@ public class Bubble {
 			private String color;
 			private short transparency;
 
+			/**
+			 * Parses the hex color string to an integer value.
+			 *
+			 * @return the color as an integer
+			 */
 			public int getColor() {
 				return Integer.parseInt(
 						color.replace("#", ""),
@@ -86,12 +108,16 @@ public class Bubble {
 			}
 		}
 
+		/**
+		 * Text styling for the bubble content.
+		 */
 		@Getter
 		@ToString
 		@NoArgsConstructor
 		@SuperBuilder(toBuilder = true)
 		public static class TextStyle {
 			private AlignmentType alignment;
+			/** Whether text has a drop shadow */
 			private boolean shadow;
 		}
 	}

@@ -10,6 +10,10 @@ import net.kyori.adventure.text.Component;
 import java.util.Collection;
 import java.util.Queue;
 
+/**
+ * Represents a complete bubble message ready for display.
+ * Contains the sender, recipients, bubble configuration, and formatted content.
+ */
 @Getter
 @Setter
 @ToString

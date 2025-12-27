@@ -1,70 +1,33 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue.stacked;
 
-import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.InterpolationMetadataPacket;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.ScaleMetadataPacket;
+import me.whereareiam.socialismus.module.bubbler.common.renderer.BubbleRendererFactory;
 import me.whereareiam.socialismus.service.Scheduler;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public final class ContractionBubbleAnimation extends StackedBubbleAnimation {
-	private final Provider<BubblerSettings> settings;
 
 	@Inject
-	public ContractionBubbleAnimation(Scheduler scheduler,
-	                                  Provider<BubblerSettings> settings) {
-		super(scheduler, settings);
-		this.settings = settings;
+	public ContractionBubbleAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory, Provider<BubblerSettings> settings) {
+		super(scheduler, rendererFactory, settings);
 	}
 
 	@Override
-	protected Vector3f initialScale(Bubble b) {
-		return toVec(b.getStyle().getScale());
+	protected boolean useSpawnAnimation() {
+		return false;
 	}
 
 	@Override
-	protected void spawnAnimation(int id, Bubble b, Collection<SocialismusPlayer> rec) {
+	protected boolean useRemovalAnimation() {
+		return true;
 	}
 
 	@Override
-	protected void removalAnimation(SocialismusPlayer sender, int id, Bubble b, Collection<SocialismusPlayer> recipients, Runnable after) {
-		long durationMs = settings.get().getAnimation().getContraction().getDuration();
-		int ticks = Math.max(1, (int) Math.ceil(durationMs / (double) tickMs()));
-		float end = settings.get().getAnimation().getContraction().getEndScale();
-
-		recipients.forEach(r -> {
-			InterpolationMetadataPacket.builder()
-					.entityId(id)
-					.startDelayTicks(0)
-					.transformDurationTicks(ticks)
-					.positionRotationDurationTicks(0)
-					.build()
-					.send(user(r));
-
-			schedule(tickMs(), () -> ScaleMetadataPacket.builder()
-					.entityId(id)
-					.scale(new Vector3f(end, end, end))
-					.build()
-					.send(user(r)));
-		});
-
-		schedule(durationMs + tickMs(), () -> {
-			recipients.forEach(r -> destroyEntities(Map.of(r, List.of(id))));
-			after.run();
-		});
-	}
-
-	@Override
-	protected long extraSpawnDelayMs(Bubble b) {
+	protected long extraSpawnDelayMs(Bubble bubble) {
 		return 0;
 	}
 }
