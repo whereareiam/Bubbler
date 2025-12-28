@@ -19,6 +19,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Packet for spawning a text display entity (1.19.4+).
+ * Text displays provide rich text rendering with customizable styling,
+ * background, and alignment options.
+ */
 @Getter
 @SuperBuilder(toBuilder = true)
 public class TextDisplayPacket extends DisplayPacket {

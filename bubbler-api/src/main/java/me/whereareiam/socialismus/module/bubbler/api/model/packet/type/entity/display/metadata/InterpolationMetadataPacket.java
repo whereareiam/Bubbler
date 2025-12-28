@@ -13,6 +13,10 @@ import me.whereareiam.socialismus.type.Version;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Metadata packet for configuring display entity interpolation settings.
+ * Interpolation allows smooth transitions between transform states.
+ */
 @Getter
 @SuperBuilder
 public class InterpolationMetadataPacket implements Packet {

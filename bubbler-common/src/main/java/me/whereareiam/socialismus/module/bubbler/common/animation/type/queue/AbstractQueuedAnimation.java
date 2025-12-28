@@ -2,27 +2,29 @@ package me.whereareiam.socialismus.module.bubbler.common.animation.type.queue;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.util.Vector3f;
 import lombok.NonNull;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.position.Position;
-import me.whereareiam.socialismus.module.bubbler.api.model.bubble.*;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.DestroyEntitiesPacket;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
-import me.whereareiam.socialismus.module.bubbler.common.util.PacketUtil;
+import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleAnimation;
+import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
+import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.module.bubbler.api.renderer.BubbleRenderer;
+import me.whereareiam.socialismus.module.bubbler.common.renderer.BubbleRendererFactory;
 import me.whereareiam.socialismus.service.Scheduler;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class AbstractQueuedAnimation extends BubbleAnimation {
 
 	private final Map<SocialismusPlayer, BubbleQueue> queues = new ConcurrentHashMap<>();
+	protected final BubbleRendererFactory rendererFactory;
 
-	protected AbstractQueuedAnimation(Scheduler scheduler) {
+	protected AbstractQueuedAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory) {
 		super(scheduler);
+		this.rendererFactory = rendererFactory;
 	}
 
 	@Override
@@ -44,13 +46,6 @@ public abstract class AbstractQueuedAnimation extends BubbleAnimation {
 		);
 	}
 
-	/**
-	 * Sub-classes implement their visual behaviour here.
-	 * <p>
-	 * The call **must** end with {@code queue.setProcessing(false)} and then
-	 * either call {@link #nextGroup(SocialismusPlayer, BubbleQueue)} again or remove
-	 * the just-finished message if all groups are done.
-	 */
 	protected abstract void playGroup(
 			SocialismusPlayer sender,
 			BubbleMessage message,
@@ -58,45 +53,19 @@ public abstract class AbstractQueuedAnimation extends BubbleAnimation {
 			BubbleQueue queue
 	);
 
-	protected TextDisplayPacket textPacket(
-			Bubble bubble, BubbleLine line, float yOffset, Position eyePos
-	) {
-		Bubble.Style s = bubble.getStyle();
-		return TextDisplayPacket.builder()
-				.position(PacketUtil.toVector3d(eyePos))
-				.text(line.getContent())
-				.type(s.getDisplay())
-				.backgroundColor(s.getBackground().getColor())
-				.transparency(s.getBackground().getTransparency())
-				.alignment(s.getText().getAlignment())
-				.hasShadow(s.getText().isShadow())
-				.isSeeThrough(s.isSeeThrough())
-				.translation(new Vector3f(0, yOffset, 0))
-				.build();
+	protected BubbleRenderer getRenderer() {
+		return rendererFactory.getRenderer();
 	}
 
-	protected PassengerPacket passengerPacket(User user, int[] entityIds) {
-		return PassengerPacket.builder()
-				.vehicleId(user.getEntityId())
-				.passengerIds(entityIds)
-				.build();
-	}
-
-	protected void destroyEntities(Map<SocialismusPlayer, List<Integer>> map) {
-		map.forEach((player, ids) -> {
-			User user = PacketEvents.getAPI()
-					.getPlayerManager()
-					.getUser(player.getAudience());
-			DestroyEntitiesPacket.builder()
-					.entityIds(ids.stream().mapToInt(Integer::intValue).toArray())
-					.build()
-					.send(user);
-		});
-	}
-
-	protected User user(SocialismusPlayer dummy) {
+	protected User user(SocialismusPlayer player) {
 		return PacketEvents.getAPI()
 				.getPlayerManager()
-				.getUser(dummy.getAudience());
+				.getUser(player.getAudience());
+	}
+
+	protected Collection<User> users(Collection<SocialismusPlayer> players) {
+		return players.stream()
+				.map(this::user)
+				.collect(Collectors.toList());
 	}
 }

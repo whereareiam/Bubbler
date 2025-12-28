@@ -7,6 +7,7 @@ import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.BubbleCoordinationService;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -25,6 +26,7 @@ public class BubbleCommand {
 				.sender(player)
 				.recipients(Set.of())
 				.content(Component.text(message))
+				.activatorType(ActivatorType.COMMAND)
 				.build()
 		);
 	}

@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.module.bubbler.common.config.template;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.model.requirement.type.ChatRequirement;
-import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
 import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleTransition;
@@ -16,7 +16,6 @@ import me.whereareiam.socialismus.module.bubbler.common.config.dynamic.BubblesCo
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.List;
 import java.util.Map;
@@ -69,8 +68,9 @@ public class BubblesConfigTemplate implements TemplateProvider<BubblesConfig> {
 				)).requirements(Map.of(
 						Participants.SENDER, RequirementGroup.builder()
 								.operator(RequirementOperatorType.OR)
-								.groups(Map.of(
-										RequirementType.CHAT, ChatRequirement.builder()
+								.groups(RequirementGroup.of(
+										Constants.Requirements.CHAT,
+										ChatRequirement.builder()
 												.condition(RequirementConditionType.CONTAINS)
 												.expected("true")
 												.chatIdentifiers(List.of("null", "fallback", "local"))

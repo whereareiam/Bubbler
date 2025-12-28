@@ -12,6 +12,10 @@ import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
 
+/**
+ * Abstract base class for entity spawn packets.
+ * Provides common entity properties like ID, position, and gravity settings.
+ */
 @Getter
 @SuperBuilder(toBuilder = true)
 public abstract class EntityPacket implements Packet {
@@ -21,6 +25,12 @@ public abstract class EntityPacket implements Packet {
 	protected final Vector3d position = new Vector3d(0.0F, 0.0F, 0.0F);
 	protected final boolean noGravity;
 
+	/**
+	 * Adds common entity metadata to the metadata list.
+	 * Handles version-specific differences in the no-gravity flag.
+	 *
+	 * @param metadata the metadata list to add to
+	 */
 	protected void addCommonMetadata(List<EntityData<?>> metadata) {
 		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_19_4)) {
 			metadata.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, noGravity));

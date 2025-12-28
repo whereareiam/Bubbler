@@ -19,6 +19,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Base packet for spawning display entities (1.19.4+).
+ * Display entities provide high-quality text and model rendering.
+ */
 @Getter
 @SuperBuilder(toBuilder = true)
 public class DisplayPacket extends EntityPacket {
@@ -28,6 +32,12 @@ public class DisplayPacket extends EntityPacket {
 	private final Vector3f scale = new Vector3f(1.0F, 1.0F, 1.0F);
 	private final DisplayType type;
 
+	/**
+	 * Adds display-specific metadata to the metadata list.
+	 * Includes translation, scale, and billboard type.
+	 *
+	 * @param metadata the metadata list to add to
+	 */
 	protected void addDisplayMetadata(List<EntityData<?>> metadata) {
 		super.addCommonMetadata(metadata);
 

@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.module.bubbler;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
@@ -36,6 +38,7 @@ public class Bubbler extends SocialisticModule {
 								parentInjector.getInstance(ConfigurationTypeResolver.class),
 								reloadableRegistry,
 								parentInjector.getInstance(RequirementEvaluatorService.class),
+								parentInjector.getInstance(Key.get(new TypeLiteral<>() {})),
 								parentInjector.getInstance(CommandService.class),
 								parentInjector.getInstance(PlayerRegistry.class)),
 						new CommonConfiguration(workingPath));

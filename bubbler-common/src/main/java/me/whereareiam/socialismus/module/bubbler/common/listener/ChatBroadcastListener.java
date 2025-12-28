@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.module.bubbler.api.BubbleCoordinationService;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -23,6 +24,7 @@ public class ChatBroadcastListener implements EventListener {
 				.sender(event.getChatMessage().getSender())
 				.recipients(event.getChatMessage().getRecipients())
 				.content(event.getChatMessage().getContent())
+				.activatorType(ActivatorType.CHAT)
 				.build()
 		);
 	}

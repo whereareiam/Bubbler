@@ -5,6 +5,10 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSe
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
 
+/**
+ * Packet for mounting entities as passengers on a vehicle entity.
+ * Used to attach bubble display entities to invisible carrier entities.
+ */
 @SuperBuilder
 public class PassengerPacket implements Packet {
 	private final int vehicleId;

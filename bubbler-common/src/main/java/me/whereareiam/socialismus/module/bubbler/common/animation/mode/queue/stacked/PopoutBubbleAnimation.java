@@ -1,43 +1,33 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue.stacked;
 
-import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.module.bubbler.common.renderer.BubbleRendererFactory;
 import me.whereareiam.socialismus.service.Scheduler;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public final class PopoutBubbleAnimation extends StackedBubbleAnimation {
 
 	@Inject
-	public PopoutBubbleAnimation(Scheduler scheduler, Provider<BubblerSettings> settings) {
-		super(scheduler, settings);
+	public PopoutBubbleAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory, Provider<BubblerSettings> settings) {
+		super(scheduler, rendererFactory, settings);
 	}
 
 	@Override
-	protected Vector3f initialScale(Bubble b) {
-		return toVec(b.getStyle().getScale());
+	protected boolean useSpawnAnimation() {
+		return false;
 	}
 
 	@Override
-	protected void spawnAnimation(int id, Bubble b, Collection<SocialismusPlayer> rec) {
+	protected boolean useRemovalAnimation() {
+		return false;
 	}
 
 	@Override
-	protected void removalAnimation(SocialismusPlayer sender, int id, Bubble b, Collection<SocialismusPlayer> recipients, Runnable after) {
-		recipients.forEach(r -> destroyEntities(Map.of(r, List.of(id))));
-		after.run();
-	}
-
-	@Override
-	protected long extraSpawnDelayMs(Bubble b) {
+	protected long extraSpawnDelayMs(Bubble bubble) {
 		return 0;
 	}
 }

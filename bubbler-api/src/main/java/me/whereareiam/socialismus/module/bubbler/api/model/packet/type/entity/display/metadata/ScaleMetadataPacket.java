@@ -14,6 +14,10 @@ import me.whereareiam.socialismus.type.Version;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Metadata packet for updating a display entity's scale.
+ * Used for animations that grow or shrink the display.
+ */
 @Getter
 @SuperBuilder
 public class ScaleMetadataPacket implements Packet {

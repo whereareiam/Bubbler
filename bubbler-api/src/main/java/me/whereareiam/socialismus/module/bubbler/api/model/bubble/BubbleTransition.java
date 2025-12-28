@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a transition effect that occurs during bubble lifecycle phases.
+ * Transitions can include sound effects and other feedback.
+ */
 @Getter
 @ToString
 @NoArgsConstructor
@@ -12,6 +16,9 @@ import lombok.experimental.SuperBuilder;
 public class BubbleTransition {
 	private Sound sound;
 
+	/**
+	 * Sound effect configuration for bubble transitions.
+	 */
 	@Getter
 	@ToString
 	@NoArgsConstructor

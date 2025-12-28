@@ -10,7 +10,6 @@ import java.util.Map;
  * Helps packets find the correct index/type for the current protocol version.
  */
 public final class VersionResolver {
-	
 	/**
 	 * Resolves a value from a version map based on the current protocol version.
 	 * Finds the highest version <= current version that has a mapping.

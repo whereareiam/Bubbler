@@ -1,24 +1,32 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue;
 
+import com.github.retrooper.packetevents.protocol.player.User;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.PassengerPacket;
-import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.TextDisplayPacket;
+import me.whereareiam.socialismus.module.bubbler.api.renderer.BubbleRenderer;
+import me.whereareiam.socialismus.module.bubbler.api.renderer.RenderedLine;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.AbstractQueuedAnimation;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.BubbleQueue;
+import me.whereareiam.socialismus.module.bubbler.common.renderer.BubbleRendererFactory;
 import me.whereareiam.socialismus.service.Scheduler;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
+@Singleton
 public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 	@Inject
-	public StaticBubbleAnimation(Scheduler scheduler) {
-		super(scheduler);
+	public StaticBubbleAnimation(
+			Scheduler scheduler,
+			BubbleRendererFactory rendererFactory
+	) {
+		super(scheduler, rendererFactory);
 	}
 
 	@Override
@@ -29,25 +37,14 @@ public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 			BubbleQueue queue
 	) {
 		Bubble bubble = msg.getBubble();
-		Collection<SocialismusPlayer> recipients = msg.getRecipients();
+		Collection<User> recipients = users(msg.getRecipients());
 		float headGap = bubble.getDisplay().getHeadLineGap();
 		float spacing = bubble.getDisplay().getLineSpacing();
-
-		List<Integer> entityIds = new ArrayList<>();
 		Position eyePos = sender.getEyePosition();
 
-		for (int i = 0; i < group.getLines().size(); i++) {
-			float y = headGap + i * spacing;
-			TextDisplayPacket p = textPacket(bubble, group.getLines().get(i), y, eyePos);
-			recipients.forEach(r -> p.send(user(r)));
-			entityIds.add(p.getEntityId());
-		}
-
-		if (!entityIds.isEmpty()) {
-			int[] arr = entityIds.stream().mapToInt(Integer::intValue).toArray();
-			PassengerPacket passenger = passengerPacket(user(sender), arr);
-			recipients.forEach(r -> passenger.send(user(r)));
-		}
+		BubbleRenderer renderer = getRenderer();
+		List<RenderedLine> lines = renderer.getStrategy().spawnStaticGroup(
+				bubble, group, headGap, spacing, eyePos, sender, recipients);
 
 		long delayMs = group.calculateDisplayTime() * 1_000L;
 		scheduler.schedule(
@@ -55,7 +52,7 @@ public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
 						.module("bubbler")
 						.delay(delayMs)
 						.runnable(() -> {
-							recipients.forEach(r -> destroyEntities(Map.of(r, entityIds)));
+							renderer.destroy(lines, recipients);
 							queue.setProcessing(false);
 							nextGroup(sender, queue);
 						})
