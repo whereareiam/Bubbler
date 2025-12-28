@@ -90,10 +90,14 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 		}
 
 		RenderedLine line = renderer.getStrategy().spawnStackedLine(bubble, lines.get(index), eyePos, renderedLines);
+		
+		// Send spawn packet first
+		renderer.sendSpawn(line, recipients);
+		
+		// THEN apply initial scale if using spawn animation (sends metadata AFTER spawn)
 		if (useSpawnAnimation()) {
 			renderer.applyInitialScale(line, bubble, recipients);
 		}
-		renderer.sendSpawn(line, recipients);
 
 		if (useSpawnAnimation()) {
 			renderer.animateSpawn(line, bubble, recipients);

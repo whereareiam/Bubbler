@@ -107,15 +107,18 @@ public class TextDisplayRenderer implements BubbleRenderer {
 
 	@Override
 	public void applyInitialScale(RenderedLine renderedLine, Bubble bubble, Collection<User> recipients) {
+		// This is called AFTER sendSpawn, so we send metadata to override the default scale
 		TextDisplayRenderedLine line = (TextDisplayRenderedLine) renderedLine;
 		float startScale = settings.get().getAnimation().getExpansion().getStartScale();
 		Vector3f scale = new Vector3f(startScale, startScale, startScale);
 
-		TextDisplayPacket scaledPacket = line.getPacket().toBuilder()
+		// Send scale metadata packet to set initial small scale
+		ScaleMetadataPacket scalePacket = ScaleMetadataPacket.builder()
+				.entityId(line.getPrimaryEntityId())
 				.scale(scale)
 				.build();
 
-		recipients.forEach(scaledPacket::send);
+		recipients.forEach(scalePacket::send);
 	}
 
 	@Override
