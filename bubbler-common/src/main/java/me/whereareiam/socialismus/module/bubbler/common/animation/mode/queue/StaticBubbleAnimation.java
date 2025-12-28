@@ -24,9 +24,11 @@ import java.util.List;
 
 @Singleton
 public final class StaticBubbleAnimation extends AbstractQueuedAnimation {
-
 	@Inject
-	public StaticBubbleAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory) {
+	public StaticBubbleAnimation(
+			Scheduler scheduler,
+			BubbleRendererFactory rendererFactory
+	) {
 		super(scheduler, rendererFactory);
 	}
 

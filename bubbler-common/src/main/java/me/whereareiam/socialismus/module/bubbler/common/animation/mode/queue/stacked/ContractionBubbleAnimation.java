@@ -10,9 +10,12 @@ import me.whereareiam.socialismus.service.Scheduler;
 
 @Singleton
 public final class ContractionBubbleAnimation extends StackedBubbleAnimation {
-
 	@Inject
-	public ContractionBubbleAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory, Provider<BubblerSettings> settings) {
+	public ContractionBubbleAnimation(
+			Scheduler scheduler,
+			BubbleRendererFactory rendererFactory,
+			Provider<BubblerSettings> settings
+	) {
 		super(scheduler, rendererFactory, settings);
 	}
 

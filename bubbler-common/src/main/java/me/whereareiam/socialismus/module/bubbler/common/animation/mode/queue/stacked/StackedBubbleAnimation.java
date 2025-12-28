@@ -1,12 +1,10 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue.stacked;
 
 import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.util.Vector3f;
 import com.google.inject.Provider;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleGroup;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
@@ -27,7 +25,11 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 
 	protected final Provider<BubblerSettings> settings;
 
-	protected StackedBubbleAnimation(Scheduler scheduler, BubbleRendererFactory rendererFactory, Provider<BubblerSettings> settings) {
+	protected StackedBubbleAnimation(
+			Scheduler scheduler,
+			BubbleRendererFactory rendererFactory,
+			Provider<BubblerSettings> settings
+	) {
 		super(scheduler, rendererFactory);
 		this.settings = settings;
 	}

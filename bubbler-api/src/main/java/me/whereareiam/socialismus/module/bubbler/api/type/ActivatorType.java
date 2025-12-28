@@ -1,11 +1,16 @@
 package me.whereareiam.socialismus.module.bubbler.api.type;
 
 /**
- * Defines the trigger mechanism that activates a chat bubble.
+ * Defines the mechanism that activated a bubble.
+ * Used to distinguish between bubbles triggered by chat messages vs direct commands.
  */
 public enum ActivatorType {
-    /** Bubble is triggered by player chat messages */
-    CHAT,
-    /** Bubble is triggered by command execution */
-    COMMAND
+	/**
+	 * Bubble was activated through Socialismus chat system
+	 */
+	CHAT,
+	/**
+	 * Bubble was activated through Bubbler's command
+	 */
+	COMMAND
 }

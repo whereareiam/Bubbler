@@ -7,8 +7,6 @@ package me.whereareiam.socialismus.module.bubbler.api.type;
 public enum BubbleType {
 	/** Uses armor stand entities with custom names (legacy support, works on all versions) */
 	ARMOR_STAND,
-	/** Uses area effect cloud entities (legacy support for passenger mounting) */
-	AREA_EFFECT_CLOUD,
 	/** Uses text display entities (1.19.4+, best visual quality and features) */
 	TEXT_DISPLAY
 }

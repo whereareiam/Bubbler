@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerCommands;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.module.bubbler.common.config.ConfiguraBootstrap;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerCommandsProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerMessagesProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerSettingsProvider;
@@ -20,6 +21,7 @@ import me.whereareiam.socialismus.module.bubbler.common.processor.BubbleMessageP
 import me.whereareiam.socialismus.module.bubbler.common.worker.BubbleSelector;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentArranger;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentTimeEvaluator;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.ActivatorRequirementValidation;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientResolver;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientSelector;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
@@ -38,6 +40,7 @@ public class CommonConfiguration extends AbstractModule {
 		requestInjection(this);
 
 		// Configuration
+		bind(ConfiguraBootstrap.class).asEagerSingleton();
 		bind(BubblerSettingsProvider.class).asEagerSingleton();
 		bind(BubblerSettings.class).toProvider(BubblerSettingsProvider.class);
 
@@ -59,6 +62,9 @@ public class CommonConfiguration extends AbstractModule {
 		bind(BubbleSelector.class).asEagerSingleton();
 		bind(ContentArranger.class).asEagerSingleton();
 		bind(ContentTimeEvaluator.class).asEagerSingleton();
+
+		// Requirements
+		bind(ActivatorRequirementValidation.class).asEagerSingleton();
 	}
 
 	@Provides

@@ -21,6 +21,9 @@ public class BubbleCoordinator implements BubbleCoordinationService {
 		bubbleMessage = bubbleMessageProcessor.process(bubbleMessage);
 		if (bubbleMessage.isCancelled()) return;
 
+		// Store activator type for requirement checks
+		bubbleMessage.getSender().setData(BubblerConstants.DataKeys.LAST_ACTIVATOR, bubbleMessage.getActivatorType());
+
 		Logger.debug("Animating bubble message for: " + bubbleMessage.getSender().getUsername() + " with animation: "
 				+ bubbleMessage.getBubble().getStyle().getAnimation());
 		bubbleAnimationFactory

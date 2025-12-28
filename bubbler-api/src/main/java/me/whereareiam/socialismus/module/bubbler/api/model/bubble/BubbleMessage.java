@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
@@ -26,5 +27,6 @@ public class BubbleMessage {
   private Queue<BubbleGroup> groups;
 
   private Component content;
+  private ActivatorType activatorType;
   private boolean cancelled;
 }
