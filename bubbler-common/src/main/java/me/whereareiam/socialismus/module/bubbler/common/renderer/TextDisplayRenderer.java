@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.position.Position;
+import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleLine;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
@@ -16,7 +17,9 @@ import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.di
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.ScaleMetadataPacket;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.display.metadata.TranslationMetadataPacket;
 import me.whereareiam.socialismus.module.bubbler.api.renderer.BubbleRenderer;
+import me.whereareiam.socialismus.module.bubbler.api.renderer.RenderStrategy;
 import me.whereareiam.socialismus.module.bubbler.api.renderer.RenderedLine;
+import me.whereareiam.socialismus.module.bubbler.common.renderer.strategy.TextDisplayRenderStrategy;
 import me.whereareiam.socialismus.module.bubbler.common.util.PacketUtil;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.service.Scheduler;
@@ -30,11 +33,13 @@ public class TextDisplayRenderer implements BubbleRenderer {
 
 	private final Provider<BubblerSettings> settings;
 	private final Scheduler scheduler;
+	private final RenderStrategy strategy;
 
 	@Inject
 	public TextDisplayRenderer(Provider<BubblerSettings> settings, Scheduler scheduler) {
 		this.settings = settings;
 		this.scheduler = scheduler;
+		this.strategy = new TextDisplayRenderStrategy(this);
 	}
 
 	@Override
@@ -98,11 +103,6 @@ public class TextDisplayRenderer implements BubbleRenderer {
 				.entityIds(ids)
 				.build();
 		recipients.forEach(packet::send);
-	}
-
-	@Override
-	public boolean supportsScaleAnimation() {
-		return true;
 	}
 
 	@Override
@@ -188,7 +188,12 @@ public class TextDisplayRenderer implements BubbleRenderer {
 		return line.getPrimaryEntityId();
 	}
 
-	private Vector3f toVector3f(me.whereareiam.socialismus.module.bubbler.api.model.Vector v) {
+	@Override
+	public RenderStrategy getStrategy() {
+		return strategy;
+	}
+
+	private Vector3f toVector3f(Vector v) {
 		return new Vector3f(v.getX(), v.getY(), v.getZ());
 	}
 }

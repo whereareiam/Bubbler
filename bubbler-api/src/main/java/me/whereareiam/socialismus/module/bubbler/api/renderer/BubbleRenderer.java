@@ -12,9 +12,11 @@ import java.util.List;
  * Interface for rendering bubble text above players.
  * Implementations handle entity creation, positioning, animation, and cleanup
  * using different entity types (armor stands, text displays, etc.).
+ * <p>
+ * This interface contains ONLY primitive rendering operations.
+ * Complex rendering logic should be delegated to RenderStrategy implementations.
  */
 public interface BubbleRenderer {
-
 	/**
 	 * Creates the entities needed to render a bubble line.
 	 *
@@ -48,7 +50,7 @@ public interface BubbleRenderer {
 	 *
 	 * @param line the line to update
 	 * @param yOffset vertical offset from the player's eye position
-	 * @param eyePos the player's current eye position
+	 * @param eyePos the player's current eye position (can be null if not needed)
 	 * @param recipients the users to send packets to
 	 */
 	void updatePosition(RenderedLine line, float yOffset, Position eyePos, Collection<User> recipients);
@@ -62,19 +64,12 @@ public interface BubbleRenderer {
 	void destroy(RenderedLine line, Collection<User> recipients);
 
 	/**
-	 * Destroys multiple rendered lines.
+	 * Destroys multiple rendered lines efficiently.
 	 *
 	 * @param lines the lines to destroy
 	 * @param recipients the users to send packets to
 	 */
 	void destroy(List<RenderedLine> lines, Collection<User> recipients);
-
-	/**
-	 * Checks if this renderer supports scale-based animations.
-	 *
-	 * @return true if scale animations are supported
-	 */
-	boolean supportsScaleAnimation();
 
 	/**
 	 * Applies the initial scale for animation (typically zero for grow effects).
@@ -105,10 +100,19 @@ public interface BubbleRenderer {
 	void animateRemoval(RenderedLine line, Bubble bubble, Collection<User> recipients, Runnable onComplete);
 
 	/**
-	 * Gets the entity ID that should be used as the passenger anchor.
+	 * Gets the entity ID that should be used as the passenger anchor point.
+	 * This is used when chaining multiple entities together.
 	 *
 	 * @param line the rendered line
 	 * @return the entity ID for passenger mounting
 	 */
 	int getPassengerAnchorId(RenderedLine line);
+
+	/**
+	 * Gets the render strategy for this renderer.
+	 * The strategy handles complex multi-line rendering logic.
+	 *
+	 * @return the render strategy
+	 */
+	RenderStrategy getStrategy();
 }
