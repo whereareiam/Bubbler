@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.bubbler.common.listener.BubbleTransitionListener;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -44,7 +45,10 @@ public class Bubbler extends SocialisticModule {
 						new CommonConfiguration(workingPath));
 
 		EventManager eventManager = parentInjector.getInstance(EventManager.class);
-		Stream.of(injector.getInstance(ChatBroadcastListener.class)).forEach(eventManager::register);
+		Stream.of(
+				injector.getInstance(ChatBroadcastListener.class),
+				injector.getInstance(BubbleTransitionListener.class)
+		).forEach(eventManager::register);
 	}
 
 	@Override

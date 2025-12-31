@@ -24,12 +24,22 @@ import java.util.function.BiConsumer;
 public class BubbleQueue {
 	private final Queue<BubbleMessage> messages = new ConcurrentLinkedQueue<>();
 	private boolean processing;
+	private int currentGroupIndex;
+	private int totalGroups;
 
 	/**
 	 * Add a bubble message to the queue.
 	 */
 	public void addMessage(BubbleMessage message) {
 		messages.add(message);
+	}
+
+	/**
+	 * Checks if the current group is the last group in the current message.
+	 */
+	public boolean isLastGroup() {
+		BubbleMessage message = messages.peek();
+		return message != null && message.getGroups().isEmpty();
 	}
 
 	/**
@@ -56,15 +66,24 @@ public class BubbleQueue {
 			// Remove invalid/cancelled message
 			messages.poll();
 			setProcessing(false);
+			currentGroupIndex = 0;
+			totalGroups = 0;
 			// Attempt next
 			afterComplete.run();
 			return;
+		}
+
+		// If starting a new message, initialize counters
+		if (currentGroupIndex == 0 && totalGroups == 0) {
+			totalGroups = message.getGroups().size();
 		}
 
 		// If no groups remain, remove the message and do afterComplete
 		if (message.getGroups().isEmpty()) {
 			messages.poll();
 			setProcessing(false);
+			currentGroupIndex = 0;
+			totalGroups = 0;
 			afterComplete.run();
 			return;
 		}
@@ -72,5 +91,6 @@ public class BubbleQueue {
 		// Grab the next group and handle it
 		BubbleGroup group = message.getGroups().poll();
 		groupHandler.accept(message, group);
+		currentGroupIndex++;
 	}
 }

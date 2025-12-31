@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.module.bubbler.common.animation.mode.queue.st
 
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.google.inject.Provider;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
@@ -12,6 +13,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
 import me.whereareiam.socialismus.module.bubbler.api.renderer.BubbleRenderer;
 import me.whereareiam.socialismus.module.bubbler.api.renderer.RenderedLine;
+import me.whereareiam.socialismus.module.bubbler.api.type.TransitionType;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.AbstractQueuedAnimation;
 import me.whereareiam.socialismus.module.bubbler.common.animation.type.queue.BubbleQueue;
 import me.whereareiam.socialismus.module.bubbler.common.renderer.BubbleRendererFactory;
@@ -28,9 +30,10 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 	protected StackedBubbleAnimation(
 			Scheduler scheduler,
 			BubbleRendererFactory rendererFactory,
-			Provider<BubblerSettings> settings
+			Provider<BubblerSettings> settings,
+			EventManager eventManager
 	) {
-		super(scheduler, rendererFactory);
+		super(scheduler, rendererFactory, eventManager);
 		this.settings = settings;
 	}
 
@@ -42,6 +45,14 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 
 	@Override
 	protected final void playGroup(SocialismusPlayer sender, BubbleMessage msg, BubbleGroup group, BubbleQueue queue) {
+		// Fire BEFORE transition for first group
+		if (queue.getCurrentGroupIndex() == 0) {
+			fireTransition(TransitionType.BEFORE, msg);
+		} else {
+			// Fire INTER transition between groups
+			fireTransition(TransitionType.INTER, msg);
+		}
+
 		List<BubbleLine> lines = new ArrayList<>(group.getLines());
 		Collections.reverse(lines);
 
@@ -66,6 +77,11 @@ abstract class StackedBubbleAnimation extends AbstractQueuedAnimation {
 
 		if (index >= lines.size()) {
 			if (renderedLines.isEmpty()) {
+				// Fire AFTER transition if this was the last group
+				if (queue.isLastGroup()) {
+					fireTransition(TransitionType.AFTER, msg);
+				}
+				
 				queue.setProcessing(false);
 				nextGroup(sender, queue);
 				return;
