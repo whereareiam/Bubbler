@@ -5,6 +5,7 @@ import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
@@ -27,6 +28,7 @@ public class BubblerInjectorConfiguration extends AbstractModule {
 
 	private final CommandService commandService;
 	private final PlayerRegistry playerRegistry;
+	private final EventManager eventManager;
 
 	@Override
 	protected void configure() {
@@ -40,5 +42,6 @@ public class BubblerInjectorConfiguration extends AbstractModule {
 
 		bind(CommandService.class).toInstance(commandService);
 		bind(PlayerRegistry.class).toInstance(playerRegistry);
+		bind(EventManager.class).toInstance(eventManager);
 	}
 }

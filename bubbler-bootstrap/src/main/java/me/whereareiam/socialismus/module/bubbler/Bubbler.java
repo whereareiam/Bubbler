@@ -31,6 +31,8 @@ public class Bubbler extends SocialisticModule {
 
 	@Override
 	public void onLoad() {
+		EventManager eventManager = parentInjector.getInstance(EventManager.class);
+
 		injector =
 				Guice.createInjector(
 						new BubblerInjectorConfiguration(
@@ -41,10 +43,11 @@ public class Bubbler extends SocialisticModule {
 								parentInjector.getInstance(RequirementEvaluatorService.class),
 								parentInjector.getInstance(Key.get(new TypeLiteral<>() {})),
 								parentInjector.getInstance(CommandService.class),
-								parentInjector.getInstance(PlayerRegistry.class)),
+								parentInjector.getInstance(PlayerRegistry.class),
+								eventManager
+						),
 						new CommonConfiguration(workingPath));
 
-		EventManager eventManager = parentInjector.getInstance(EventManager.class);
 		Stream.of(
 				injector.getInstance(ChatBroadcastListener.class),
 				injector.getInstance(BubbleTransitionListener.class)
