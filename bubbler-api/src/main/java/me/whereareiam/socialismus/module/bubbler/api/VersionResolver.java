@@ -11,6 +11,24 @@ import java.util.Map;
  */
 public final class VersionResolver {
 	/**
+	 * Returns the effective protocol version to resolve mappings against.
+	 * <p>
+	 * Servers newer than the host's known versions are reported as
+	 * {@link Version#FUTURE}. Because {@code FUTURE} has a very low ordinal, a
+	 * naive walk-down would treat such servers as the oldest possible version
+	 * (or fail to resolve entirely). Instead we map {@code FUTURE} to the latest
+	 * known version, so forward-compatible protocol layouts (e.g. display entity
+	 * metadata, which is unchanged in newer releases) keep resolving correctly.
+	 *
+	 * @return the current server version, or the latest known version when the
+	 *         server is newer than anything the host recognises
+	 */
+	public static Version current() {
+		Version version = Constants.SERVER_VERSION;
+		return version == Version.FUTURE ? Version.getLatest() : version;
+	}
+
+	/**
 	 * Resolves a value from a version map based on the current protocol version.
 	 * Finds the highest version <= current version that has a mapping.
 	 *
@@ -20,7 +38,7 @@ public final class VersionResolver {
 	 */
 	public static <T> T resolve(Map<Version, T> versionMap, T defaultValue) {
 		// Find the highest version <= current version that has a mapping
-		Version bestVersion = Constants.SERVER_VERSION;
+		Version bestVersion = current();
 		while (bestVersion != null && !versionMap.containsKey(bestVersion)) {
 			if (bestVersion.ordinal() == 0) return defaultValue;
 
