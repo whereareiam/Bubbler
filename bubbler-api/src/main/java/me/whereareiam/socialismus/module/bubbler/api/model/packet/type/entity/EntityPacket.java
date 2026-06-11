@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.Packet;
 import me.whereareiam.socialismus.type.Version;
 
@@ -32,7 +32,7 @@ public abstract class EntityPacket implements Packet {
 	 * @param metadata the metadata list to add to
 	 */
 	protected void addCommonMetadata(List<EntityData<?>> metadata) {
-		if (VersionResolver.current().isAtLeast(Version.V_1_19_4)) {
+		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_19_4)) {
 			metadata.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, noGravity));
 		} else {
 			metadata.add(new EntityData<>(5, EntityDataTypes.BYTE, (byte) (noGravity ? 0x02 : 0)));
