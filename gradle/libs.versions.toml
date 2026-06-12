@@ -10,7 +10,7 @@ lombok = "1.18.42"
 
 # general
 adventure = "4.25.0"
-packetevents = "2.11.0"
+packetevents = "2.12.2"
 cloud = "2.0.0"
 
 # testing
