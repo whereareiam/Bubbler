@@ -107,7 +107,7 @@ jobs:
             output/${{ needs.prepare.outputs.name }}-MODULE-${{ needs.prepare.outputs.version }}.jar
 
       - name: Upload distribution artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Release Artifacts
           path: output/
