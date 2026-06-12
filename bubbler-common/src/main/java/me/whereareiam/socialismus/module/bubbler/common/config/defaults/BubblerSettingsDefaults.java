@@ -1,12 +1,12 @@
-package me.whereareiam.socialismus.module.bubbler.common.config.template;
+package me.whereareiam.socialismus.module.bubbler.common.config.defaults;
 
 import com.google.inject.Singleton;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
 import me.whereareiam.socialismus.module.bubbler.api.type.BubbleType;
 
 @Singleton
-public class BubblerSettingsTemplate implements TemplateProvider<BubblerSettings> {
+public class BubblerSettingsDefaults implements DefaultsProvider<BubblerSettings> {
 	@Override
 	public BubblerSettings supply(BubblerSettings config) {
 		config.setBubbleType(BubbleType.TEXT_DISPLAY);

@@ -3,16 +3,15 @@ package me.whereareiam.socialismus.module.bubbler.common.config.provider;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.configura.Config;
+import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.config.ConfigProvider;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
-import me.whereareiam.socialismus.module.bubbler.common.config.BubblerConfigProvider;
+import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.bubbler.common.config.defaults.BubblesDefaults;
 import me.whereareiam.socialismus.module.bubbler.common.config.dynamic.BubblesConfig;
-import me.whereareiam.socialismus.module.bubbler.common.config.template.BubblesConfigTemplate;
 import me.whereareiam.socialismus.registry.base.Registry;
-import me.whereareiam.socialismus.type.ConfigurationType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,44 +22,42 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Singleton
-public class BubblesProvider extends BubblerConfigProvider<List<Bubble>> {
-	private final Path bubblesPath;
-	private final ConfigurationType configurationType;
-
+public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 	@Inject
+	@SuppressWarnings("unchecked")
 	public BubblesProvider(
 			@Named("bubblesPath") Path bubblesPath,
-			@Named("workingPath") Path workingPath,
-			ConfigurationTypeResolver typeResolver,
 			Registry<Reloadable> registry
 	) {
-		super(workingPath, registry);
-		this.bubblesPath = bubblesPath;
-		this.configurationType = typeResolver.getConfigurationType();
+		super(
+				bubblesPath,
+				"",
+				(Class<? extends List<Bubble>>) List.class,
+				registry
+		);
 	}
 
 	@Override
 	protected List<Bubble> load() {
 		List<Bubble> bubbles = new ArrayList<>();
-		try (Stream<Path> paths = Files.list(bubblesPath)) {
+		try (Stream<Path> paths = Files.list(getPath())) {
 			paths.filter(Files::isRegularFile)
-					.filter(path -> path.getFileName().toString().endsWith(configurationType.getExtension()))
 					.forEach(path -> {
 						String fileName = path.getFileName().toString();
-						// Remove the configured extension
-						fileName = fileName.substring(0, fileName.length() - configurationType.getExtension().length());
+						int dotIndex = fileName.lastIndexOf('.');
+						String baseName = dotIndex == -1 ? fileName : fileName.substring(0, dotIndex);
 
-						if (fileName.isEmpty()) return;
+						if (baseName.isEmpty()) return;
 
-						bubbles.addAll(addBubblesFromConfig(path.getParent().resolve(fileName)));
+						bubbles.addAll(addBubblesFromConfig(path.getParent().resolve(baseName)));
 					});
 		} catch (IOException e) {
-			Logger.severe("Failed to load bubble configurations: " + e.getMessage());
+			Logger.severe("Failed to load bubble configurations", e);
 			return Collections.emptyList();
 		}
 
 		if (bubbles.isEmpty())
-			bubbles.addAll(addBubblesFromConfig(bubblesPath.resolve("default")));
+			bubbles.addAll(addBubblesFromConfig(getPath().resolve("default")));
 
 		// Remove duplicates by ID
 		bubbles.removeIf(bubble -> bubbles.stream()
@@ -69,12 +66,17 @@ public class BubblesProvider extends BubblerConfigProvider<List<Bubble>> {
 	}
 
 	@Override
-	protected void registerTemplate() {
-		Config.registerTemplate(BubblesConfigTemplate.class);
+	protected Configura configura() {
+		return versioned(
+				super.configura()
+						.withDefaults(BubblesDefaults.class)
+						.withFeature(CommonConfiguration.createRequirementPolymorphicFeature()),
+				BubblesConfig.class
+		);
 	}
 
 	private List<Bubble> addBubblesFromConfig(Path path) {
-		BubblesConfig config = Config.update(path, BubblesConfig.class);
+		BubblesConfig config = configura().update(path, BubblesConfig.class);
 		return config.getBubbles().stream()
 				.filter(Bubble::isEnabled)
 				.toList();

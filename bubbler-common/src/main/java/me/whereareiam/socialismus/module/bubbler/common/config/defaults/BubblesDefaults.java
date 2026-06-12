@@ -1,7 +1,7 @@
-package me.whereareiam.socialismus.module.bubbler.common.config.template;
+package me.whereareiam.socialismus.module.bubbler.common.config.defaults;
 
 import com.google.inject.Singleton;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.model.requirement.type.ChatRequirement;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Singleton
-public class BubblesConfigTemplate implements TemplateProvider<BubblesConfig> {
+public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 	@Override
 	public BubblesConfig supply(BubblesConfig config) {
 		// Default values

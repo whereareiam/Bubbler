@@ -1,8 +1,15 @@
-rootProject.name = "Bubbler"
+rootProject.name = "build-logic"
 
 pluginManagement {
-    includeBuild("build-logic")
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven("https://maven.whereareiam.me/release")
+        maven("https://maven.whereareiam.me/development")
+    }
+}
 
+dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -10,20 +17,10 @@ pluginManagement {
         maven("https://maven.whereareiam.me/development")
         maven("https://repo.codemc.io/repository/maven-releases/")
     }
-}
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-
-    repositories {
-        mavenCentral()
-        maven("https://maven.whereareiam.me/release")
-        maven("https://maven.whereareiam.me/development")
-        maven("https://repo.codemc.io/repository/maven-releases/")
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
     }
 }
-
-include("bubbler-api")
-include("bubbler-bootstrap")
-include("bubbler-command")
-include("bubbler-common")

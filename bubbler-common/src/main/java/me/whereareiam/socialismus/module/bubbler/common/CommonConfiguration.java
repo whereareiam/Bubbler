@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
+import me.whereareiam.configura.feature.polymorphic.PolymorphicFeature;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.module.bubbler.api.BubbleCoordinationService;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
@@ -12,7 +13,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerCommands;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
-import me.whereareiam.socialismus.module.bubbler.common.config.ConfiguraBootstrap;
+import me.whereareiam.socialismus.module.bubbler.api.model.requirement.ActivatorRequirement;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerCommandsProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerMessagesProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerSettingsProvider;
@@ -24,6 +25,7 @@ import me.whereareiam.socialismus.module.bubbler.common.worker.container.Content
 import me.whereareiam.socialismus.module.bubbler.common.requirement.ActivatorRequirementValidation;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientResolver;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientSelector;
+import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 
 import java.io.IOException;
@@ -40,7 +42,6 @@ public class CommonConfiguration extends AbstractModule {
 		requestInjection(this);
 
 		// Configuration
-		bind(ConfiguraBootstrap.class).asEagerSingleton();
 		bind(BubblerSettingsProvider.class).asEagerSingleton();
 		bind(BubblerSettings.class).toProvider(BubblerSettingsProvider.class);
 
@@ -65,6 +66,14 @@ public class CommonConfiguration extends AbstractModule {
 
 		// Requirements
 		bind(ActivatorRequirementValidation.class).asEagerSingleton();
+	}
+
+	public static PolymorphicFeature createRequirementPolymorphicFeature() {
+		PolymorphicFeature polymorphic = PolymorphicFeature.defaults();
+		polymorphic.register(Requirement.class)
+				.inferByField("activators", ActivatorRequirement.class)
+				.build();
+		return polymorphic;
 	}
 
 	@Provides

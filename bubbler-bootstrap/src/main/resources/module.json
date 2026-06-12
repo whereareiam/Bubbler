@@ -7,6 +7,7 @@
   "supportedPlatforms": [
     "PAPER",
     "BUKKIT",
+    "SPIGOT",
     "FOLIA"
   ],
   "supportedVersions": [
@@ -61,7 +62,7 @@
   "updater": {
     "release": {
       "provider": "MODRINTH",
-      "id": "whereareiam/Chirper"
+      "id": "whereareiam/Bubbler"
     },
     "dev": {
       "provider": "GITHUB",

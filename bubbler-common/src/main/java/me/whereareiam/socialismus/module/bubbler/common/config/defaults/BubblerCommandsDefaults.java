@@ -1,15 +1,15 @@
-package me.whereareiam.socialismus.module.bubbler.common.config.template;
+package me.whereareiam.socialismus.module.bubbler.common.config.defaults;
 
 import com.google.inject.Singleton;
-import me.whereareiam.commandant.model.CommandDefinition;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
+import me.whereareiam.socialismus.model.CommandDefinition;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerCommands;
 
 import java.util.List;
 import java.util.Map;
 
 @Singleton
-public class BubblerCommandsTemplate implements TemplateProvider<BubblerCommands> {
+public class BubblerCommandsDefaults implements DefaultsProvider<BubblerCommands> {
     @Override
     public BubblerCommands supply(BubblerCommands config) {
         // Default values

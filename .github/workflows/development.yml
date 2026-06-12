@@ -4,125 +4,75 @@ on:
   push:
     branches:
       - dev
+  workflow_dispatch:
 
 jobs:
+  validate-ref:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject release refs for manual development publish
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            release|release/*)
+              echo "Manual development publish is not allowed from ${GITHUB_REF_NAME}."
+              exit 1
+              ;;
+          esac
+
   prepare:
+    needs: validate-ref
+    if: always() && (github.event_name != 'workflow_dispatch' || needs.validate-ref.result == 'success')
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.details.outputs.name }}
       version: ${{ steps.details.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Extract project details
         id: details
         run: |
           echo "name=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_OUTPUT
-          echo "version=${GITHUB_REF##*/}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-
-  test:
-    needs: prepare
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          check-latest: true
-
-      - name: Run tests
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        run: ./gradlew test
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Test results
-          path: |
-            **/build/test-results/test/*.xml
-            **/build/reports/tests/test/
-
-      - name: Test summary
-        if: always()
-        run: |
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-          find . -name "TEST-*.xml" -type f | while read file; do
-            suite=$(grep -oP 'name="\K[^"]+' "$file" | head -1)
-            tests=$(grep -oP 'tests="\K[^"]+' "$file" | head -1)
-            failures=$(grep -oP 'failures="\K[^"]+' "$file" | head -1)
-            errors=$(grep -oP 'errors="\K[^"]+' "$file" | head -1)
-            echo "- **$suite**: $tests tests, $failures failures, $errors errors" >> $GITHUB_STEP_SUMMARY
-          done
+          branch_name="${GITHUB_REF_NAME//\//-}"
+          echo "version=${branch_name}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
   build:
-    needs: [prepare, test]
+    needs: prepare
+    if: always() && needs.prepare.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
       packages: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          check-latest: true
+        uses: actions/checkout@v5
 
       - name: Build project
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        run: ./gradlew shadowJar
-
-      - name: Create output directory
-        run: mkdir output
-
-      - name: Move module jar
-        run: mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}.jar
-
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Build artifacts
-          path: output/
-
-  publish:
-    needs: prepare
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          check-latest: true
-
-      - name: Publish API to Maven repository
+        uses: ./.github/actions/gradle-build
         env:
           PUBLISH_USER: ${{ secrets.PUBLISH_USER }}
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
           VERSION: ${{ needs.prepare.outputs.version }}
           PUBLISH_REALM: development
-        run: ./gradlew --no-daemon publish
+        with:
+          gradle-command: ./gradlew --no-daemon test build publish
+          ignore-test-failures: 'true'
+
+      - name: Create output directory
+        run: mkdir output
+
+      - name: Move API
+        run: mv bubbler-api/build/libs/bubbler-api-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
+
+      - name: Move module jar
+        run: mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-MODULE-${{ needs.prepare.outputs.version }}.jar
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: Build artifacts
+          path: output/

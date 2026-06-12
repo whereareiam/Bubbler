@@ -1,7 +1,3 @@
-dependencies {
-    "compileOnly"(project(":bubbler-api"))
-}
-
-tasks.test {
-    useJUnitPlatform()
+plugins {
+    id("shared")
 }

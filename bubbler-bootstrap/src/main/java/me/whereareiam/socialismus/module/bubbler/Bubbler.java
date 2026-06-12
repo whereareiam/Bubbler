@@ -7,7 +7,6 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
@@ -23,7 +22,8 @@ import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorServic
 
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
+@SuppressWarnings("unused")
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class Bubbler extends SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
@@ -38,7 +38,6 @@ public class Bubbler extends SocialisticModule {
 						new BubblerInjectorConfiguration(
 								parentInjector.getInstance(Scheduler.class),
 								parentInjector.getInstance(PlatformInteractor.class),
-								parentInjector.getInstance(ConfigurationTypeResolver.class),
 								reloadableRegistry,
 								parentInjector.getInstance(RequirementEvaluatorService.class),
 								parentInjector.getInstance(Key.get(new TypeLiteral<>() {})),
