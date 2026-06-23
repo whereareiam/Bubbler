@@ -15,7 +15,7 @@ cloud = "2.0.0"
 annotations = "26.1.0"
 adventure = "4.25.0"
 packetevents = "2.12.2"
-commandant = "dev-42806f6"
+commandant = "0.0.1"
 configura = "dev-43bc95a"
 
 # testing
