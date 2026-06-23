@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 @Singleton
 public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 	@Inject
-	@SuppressWarnings("unchecked")
 	public BubblesProvider(
 			@Named("bubblesPath") Path bubblesPath,
 			Registry<Reloadable> registry
@@ -32,7 +31,7 @@ public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 		super(
 				bubblesPath,
 				"",
-				(Class<? extends List<Bubble>>) List.class,
+				listType(),
 				registry
 		);
 	}
@@ -80,5 +79,10 @@ public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 		return config.getBubbles().stream()
 				.filter(Bubble::isEnabled)
 				.toList();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Class<? extends List<Bubble>> listType() {
+		return (Class<? extends List<Bubble>>) (Class<?>) List.class;
 	}
 }
