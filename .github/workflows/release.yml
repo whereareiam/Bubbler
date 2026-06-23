@@ -27,7 +27,7 @@ jobs:
       release-url: ${{ steps.release.outputs.release-url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || github.ref }}
 
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.prepare.outputs.release-tag }}
 
@@ -125,7 +125,7 @@ jobs:
 
     steps:
       - name: Checkout tagged release
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.prepare.outputs.release-tag }}
 
