@@ -72,7 +72,7 @@ jobs:
         run: mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-MODULE-${{ needs.prepare.outputs.version }}.jar
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Build artifacts
           path: output/
