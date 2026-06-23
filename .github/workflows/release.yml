@@ -33,7 +33,7 @@ jobs:
 
       - name: Resolve release metadata
         id: release
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           INPUT_RELEASE_TAG: ${{ inputs.release-tag }}
         with:
