@@ -16,7 +16,7 @@ annotations = "26.1.0"
 adventure = "4.25.0"
 packetevents = "2.12.2"
 commandant = "dev-42806f6"
-configura = "dev-43bc95a"
+configura = "dev-537309f"
 
 # testing
 junit = "6.1.0"
