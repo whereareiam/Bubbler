@@ -19,7 +19,7 @@ commandant = "dev-42806f6"
 configura = "dev-43bc95a"
 
 # testing
-junit = "6.1.0"
+junit = "6.1.1"
 mockito = "5.23.0"
 
 [libraries]
