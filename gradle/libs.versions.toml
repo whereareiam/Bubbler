@@ -1,7 +1,7 @@
 [versions]
 
 # plugins
-shadow = "9.4.2"
+shadow = "9.4.3"
 toolkit = "dev-8c0271b"
 
 socialismus = "dev-217410a"
